@@ -1,4 +1,4 @@
-from .mecanumdrive import MecanumDrive
+from .skiddrive import SkidDrive
 
 class DriveTrain(SkidDrive):
     '''
