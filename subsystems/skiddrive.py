@@ -10,7 +10,7 @@ class SkidDrive(BaseDrive):
     def _configureMotors(self):
         
         '''Only the front motors are active in a skid system.'''
-        self.activeMotors = [self.motors[0], self.motors[1]]
+        self.activeMotors = self.motors[0:2]
 
         self.motors[2].setControlMode(CANTalon.ControlMode.Follower)
         self.motors[2].set(ports.drivetrain.frontLeftMotorID)

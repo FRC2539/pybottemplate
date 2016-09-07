@@ -2,7 +2,7 @@
 
 from wpilib import IterativeRobot
 from wpilib.command import Scheduler
-from wpilib import driverstation
+from wpilib.driverstation import DriverStation
 from wpilib import LiveWindow
 from wpilib import run
 
@@ -21,10 +21,6 @@ class KryptonBot(IterativeRobot):
         subsystems.init()
         driverhud.init()
 
-        self.autonomousPeriodic = self.commandPeriodic
-        self.teleopPeriodic = self.commandPeriodic
-        self.disabledPeriodic = self.commandPeriodic
-
 
     def autonomousInit(self):
         '''This function is called each time autonomous mode starts.'''
@@ -42,13 +38,18 @@ class KryptonBot(IterativeRobot):
         try:
             self.scheduler.run()
         except Exception as error:
-            if not driverstation.getInstance().isFMSAttached():
+            if not DriverStation.getInstance().isFMSAttached():
                 raise
 
             driverhud.showAlert('Error: %s' % error)
 
             '''Just to be safe, stop all running commands.'''
             self.scheduler.removeAll()
+
+
+    autonomousPeriodic = commandPeriodic
+    teleopPeriodic = commandPeriodic
+    disabledPeriodic = commandPeriodic
 
 
     def testPeriodic(self):

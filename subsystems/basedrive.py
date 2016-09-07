@@ -57,12 +57,28 @@ class BaseDrive(Subsystem):
             .addSubTableListener(self._updateValues)
 
         '''Add items that can be debugged in Test mode.'''
-        LiveWindow.addSensor(self, 'navX', self.navX)
+        LiveWindow.addSensor(self.getName(), 'navX', self.navX)
 
-        LiveWindow.addActuator(self, 'Front Left Motor', self.motors[0])
-        LiveWindow.addActuator(self, 'Front Right Motor', self.motors[1])
-        LiveWindow.addActuator(self, 'Back Left Motor', self.motors[2])
-        LiveWindow.addActuator(self, 'Back Right Motor', self.motors[3])
+        LiveWindow.addActuator(
+            self.getName(),
+            'Front Left Motor',
+            self.motors[0]
+        )
+        LiveWindow.addActuator(
+            self.getName(),
+            'Front Right Motor',
+            self.motors[1]
+        )
+        LiveWindow.addActuator(
+            self.getName(),
+            'Back Left Motor',
+            self.motors[2]
+        )
+        LiveWindow.addActuator(
+            self.getName(),
+            'Back Right Motor',
+            self.motors[3]
+        )
 
 
     def initDefaultCommand(self):
