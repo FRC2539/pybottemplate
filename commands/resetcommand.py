@@ -1,4 +1,4 @@
-from .generics.instantcommand import InstantCommand
+from commandbased import InstantCommand
 
 import subsystems
 

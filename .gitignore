@@ -1,6 +1,5 @@
-*.pyc
+*.py[cod]
 __pycache__
 *.kdev4
 tests
 .deploy_cfg
-

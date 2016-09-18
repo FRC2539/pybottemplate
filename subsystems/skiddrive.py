@@ -8,10 +8,11 @@ class SkidDrive(BaseDrive):
 
 
     def _configureMotors(self):
-        
+
         '''Only the front motors are active in a skid system.'''
         self.activeMotors = self.motors[0:2]
 
+        '''Make the back motors follow the front.'''
         self.motors[2].setControlMode(CANTalon.ControlMode.Follower)
         self.motors[2].set(ports.drivetrain.frontLeftMotorID)
         self.motors[3].setControlMode(CANTalon.ControlMode.Follower)
@@ -19,10 +20,8 @@ class SkidDrive(BaseDrive):
 
         '''Invert the left side.'''
         self.motors[RobotDrive.MotorType.kFrontLeft].reverseSensor(True)
-        
 
 
     def _calculateSpeeds(self, x, y, rotate):
         return [y + rotate, -y + rotate]
-        
-        
+

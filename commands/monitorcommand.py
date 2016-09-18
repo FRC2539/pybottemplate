@@ -1,8 +1,8 @@
-from .generics.defaultcommand import DefaultCommand
+from commandbased import Command
 
 import subsystems
 
-class MonitorCommand(DefaultCommand):
+class MonitorCommand(Command):
     '''Runs continually while the robot is enabled.'''
 
     def __init__(self):

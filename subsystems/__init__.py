@@ -4,6 +4,8 @@ If you want your subsystem to be accessible to commands, you must add a variable
 for it in the global scope.
 '''
 
+from wpilib.robotbase import RobotBase
+
 from .drivetrain import DriveTrain
 from .monitor import Monitor
 from .oi import OI
@@ -18,14 +20,19 @@ def init():
     '''
     global drivetrain, monitor
 
-    if drivetrain is not None:
+    '''
+    The default tests that are run before deploy call startCompetition multiple
+    times, breaking the normal flow, so we test to see if we're running in a
+    test by checking isSimulation.
+    '''
+    if drivetrain is not None and not RobotBase.isSimulation():
         raise RuntimeError('Subsystems have already been initialized')
 
     drivetrain = DriveTrain()
     monitor = Monitor()
 
     '''
-    Since OI instantiates command as part of its construction, and those
+    Since OI instantiates commands as part of its construction, and those
     commands need access to the subsystems, OI must be instantiated last.
     '''
     OI()

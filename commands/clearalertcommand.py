@@ -1,6 +1,6 @@
 from wpilib.smartdashboard import SmartDashboard
 
-from .generics.timedcommand import TimedCommand
+from commandbased import TimedCommand
 
 class ClearAlertCommand(TimedCommand):
     '''Remove the alert message after a set number of seconds.'''

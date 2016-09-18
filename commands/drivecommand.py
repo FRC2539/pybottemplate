@@ -1,4 +1,4 @@
-from .generics.defaultcommand import DefaultCommand
+from commandbased import Command
 from wpilib.preferences import Preferences
 
 import subsystems
@@ -8,7 +8,7 @@ logicalaxes.registerAxis('driveX')
 logicalaxes.registerAxis('driveY')
 logicalaxes.registerAxis('driveRotate')
 
-class DriveCommand(DefaultCommand):
+class DriveCommand(Command):
     def __init__(self, speedLimit):
         super().__init__('DriveCommand %s' % speedLimit)
 

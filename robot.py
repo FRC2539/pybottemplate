@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
 
-from wpilib import IterativeRobot
-from wpilib.command import Scheduler
-from wpilib.driverstation import DriverStation
-from wpilib import LiveWindow
-from wpilib import run
+from commandbased import CommandBasedRobot
+from wpilib._impl.main import run
 
 from custom import driverhud
 import subsystems
 
 
-class KryptonBot(IterativeRobot):
+class KryptonBot(CommandBasedRobot):
     '''Implements a Command Based robot design'''
 
     def robotInit(self):
         '''Set up everything we need for a working robot.'''
-
-        self.scheduler = Scheduler.getInstance()
 
         subsystems.init()
         driverhud.init()
@@ -29,36 +24,9 @@ class KryptonBot(IterativeRobot):
         driverhud.getAutonomousProgram().start()
 
 
-    def commandPeriodic(self):
-        '''
-        Run the scheduler regularly. If an error occurs during a competition,
-        prevent it from crashing the program.
-        '''
-
-        try:
-            self.scheduler.run()
-        except Exception as error:
-            if not DriverStation.getInstance().isFMSAttached():
-                raise
-
-            driverhud.showAlert('Error: %s' % error)
-
-            '''Just to be safe, stop all running commands.'''
-            self.scheduler.removeAll()
-
-
-    autonomousPeriodic = commandPeriodic
-    teleopPeriodic = commandPeriodic
-    disabledPeriodic = commandPeriodic
-
-
-    def testPeriodic(self):
-        '''
-        Test mode will not run normal commands, but motors can be controlled
-        and sensors viewed with the SmartDashboard.
-        '''
-
-        LiveWindow.run()
+    def handleCrash(self, error):
+        super().handleCrash()
+        driverhud.showAlert('Fatal Error: %s' % error)
 
 
 if __name__ == '__main__':

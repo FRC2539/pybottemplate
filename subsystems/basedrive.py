@@ -1,7 +1,6 @@
-from wpilib.command.subsystem import Subsystem
+from .debuggablesubsystem import DebuggableSubsystem
 from wpilib.cantalon import CANTalon
 from wpilib.preferences import Preferences
-from wpilib.livewindow import LiveWindow
 from networktables import NetworkTable
 
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
@@ -9,7 +8,7 @@ from robotpy_ext.common_drivers.navx.ahrs import AHRS
 from commands.drivecommand import DriveCommand
 import ports
 
-class BaseDrive(Subsystem):
+class BaseDrive(DebuggableSubsystem):
     '''
     A general case drive train system. It abstracts away shared functionality of
     the various drive types that we can employ. Anything that can be done with
@@ -57,28 +56,12 @@ class BaseDrive(Subsystem):
             .addSubTableListener(self._updateValues)
 
         '''Add items that can be debugged in Test mode.'''
-        LiveWindow.addSensor(self.getName(), 'navX', self.navX)
+        self.debugSensor('navX', self.navX)
 
-        LiveWindow.addActuator(
-            self.getName(),
-            'Front Left Motor',
-            self.motors[0]
-        )
-        LiveWindow.addActuator(
-            self.getName(),
-            'Front Right Motor',
-            self.motors[1]
-        )
-        LiveWindow.addActuator(
-            self.getName(),
-            'Back Left Motor',
-            self.motors[2]
-        )
-        LiveWindow.addActuator(
-            self.getName(),
-            'Back Right Motor',
-            self.motors[3]
-        )
+        self.debugMotor('Front Left Motor', self.motors[0])
+        self.debugMotor('Front Right Motor', self.motors[1])
+        self.debugMotor('Back Left Motor', self.motors[2])
+        self.debugMotor('Back Right Motor', self.motors[3])
 
 
     def initDefaultCommand(self):
