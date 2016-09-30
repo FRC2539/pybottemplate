@@ -30,3 +30,5 @@ class OI(Subsystem):
         self.mainController.X.toggleWhenPressed(DriveCommand('DriveTrain/preciseSpeed'))
 
         self.backupController = LogitechDualShock(1)
+        logicalaxes.pivot = self.backupController.LeftY
+        

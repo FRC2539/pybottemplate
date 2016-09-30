@@ -15,6 +15,8 @@ is_shown = False
 autonChooser = None
 clearer = ClearAlertCommand()
 
+from wpilib.robotbase import RobotBase
+
 def init():
     '''
     This function must be called from robotInit, but not before the subsystems
@@ -23,7 +25,7 @@ def init():
 
     global is_shown, autonChooser
 
-    if is_shown:
+    if is_shown and not RobotBase.isSimulation():
         raise RuntimeError('Driver HUD has already been initialized')
 
     is_shown = True
