@@ -3,6 +3,7 @@ from wpilib.cantalon import CANTalon
 from wpilib.cameraserver import CameraServer
 from wpilib.preferences import Preferences
 from debuggablesubsystem import DebuggableSubsystem
+from commands.shootercommand import ShooterCommand
 
 class Shooter(DebuggableSubsystem):
     def __init__(self, name):
@@ -64,6 +65,14 @@ class Shooter(DebuggableSubsystem):
             self.rightPivotMotor.set(-20000)
         else:
             self.rightPivotMotor.set(0)
+            
+    def initDefaultCommand(self):
+        '''
+        By default, unless another command is running that requires this
+        subsystem, we will drive via joystick using the max speed stored in
+        Preferences.
+        '''
+        self.setDefaultCommand(ShooterCommand())
     
     def holdAt(self, position):
         if self.atKnownPosition() == False:
