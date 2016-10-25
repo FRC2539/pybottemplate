@@ -3,6 +3,8 @@ from wpilib.command.subsystem import Subsystem
 from controller.logitechdualshock import LogitechDualShock
 from controller import logicalaxes
 
+from custom.config import Config
+
 from commands.drivecommand import DriveCommand
 
 class OI(Subsystem):
@@ -27,7 +29,9 @@ class OI(Subsystem):
         logicalaxes.driveY = self.mainController.LeftY
         logicalaxes.driveRotate = self.mainController.RightX
 
-        self.mainController.X.toggleWhenPressed(DriveCommand('DriveTrain/preciseSpeed'))
+        self.mainController.X.toggleWhenPressed(
+            DriveCommand(Config('DriveTrain/preciseSpeed'))
+        )
 
         self.backupController = LogitechDualShock(1)
         logicalaxes.pivot = self.backupController.LeftY

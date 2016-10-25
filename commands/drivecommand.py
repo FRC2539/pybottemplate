@@ -17,12 +17,8 @@ class DriveCommand(Command):
 
 
     def initialize(self):
-        try:
-            speedLimit = int(self.speedLimit)
-        except ValueError:
-            speedLimit = Preferences.getInstance().getInt(self.speedLimit, 1)
+        subsystems.drivetrain.setSpeedLimit(int(self.speedLimit))
 
-        subsystems.drivetrain.setSpeedLimit(speedLimit)
 
     def execute(self):
         subsystems.drivetrain.move(

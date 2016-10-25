@@ -1,10 +1,9 @@
 from .debuggablesubsystem import DebuggableSubsystem
 from wpilib.cantalon import CANTalon
-from wpilib.preferences import Preferences
-from networktables import NetworkTable
 
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
 
+from custom.config import Config
 from commands.drivecommand import DriveCommand
 import ports
 
@@ -47,13 +46,7 @@ class BaseDrive(DebuggableSubsystem):
         self.lastInputs = None
 
         self.setUseEncoders()
-        self.maxSpeed = Preferences \
-            .getInstance() \
-            .getInt('DriveTrain/maxSpeed', 1)
-
-        NetworkTable \
-            .getTable('Preferences/DriveTrain') \
-            .addSubTableListener(self._updateValues)
+        self.maxSpeed = 1
 
         '''Add items that can be debugged in Test mode.'''
         self.debugSensor('navX', self.navX)
@@ -68,9 +61,9 @@ class BaseDrive(DebuggableSubsystem):
         '''
         By default, unless another command is running that requires this
         subsystem, we will drive via joystick using the max speed stored in
-        Preferences.
+        Config.
         '''
-        self.setDefaultCommand(DriveCommand('DriveTrain/maxSpeed'))
+        self.setDefaultCommand(DriveCommand(Config('DriveTrain/maxSpeed')))
 
 
     def move(self, x, y, rotate):
@@ -185,9 +178,11 @@ class BaseDrive(DebuggableSubsystem):
             raise ValueError('DriveTrain speed cannot be less than 0')
 
         self.speedLimit = speed
+        if speed > self.maxSpeed:
+            self.maxSpeed = speed
 
         '''If we can't use encoders, attempt to approximate that speed.'''
-        self.maxPercentVBus = min(speed / self.maxSpeed, 1)
+        self.maxPercentVBus = speed / self.maxSpeed
 
         if self.useEncoders:
             self._setMode(CANTalon.ControlMode.Speed)
@@ -210,18 +205,6 @@ class BaseDrive(DebuggableSubsystem):
                 motor.clearIaccum()
 
             motor.setControlMode(mode)
-
-
-    def _updateValues(self, source, key, value, isNew):
-        '''
-        Listener for changes to Preferences. When a key changes, this function
-        tries to do the right thing.
-        '''
-
-        if key == 'maxSpeed':
-            self.maxSpeed = int(value)
-            if value < self.speedLimit:
-                self.setSpeedLimit(value)
 
 
     def _configureMotors(self):
