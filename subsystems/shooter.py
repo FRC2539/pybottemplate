@@ -49,30 +49,14 @@ class Shooter(DebuggableSubsystem):
         self.debugSensor("ball detector", self.ballDetector)
         
     
-    def pivot(self, direction):
-        pivotDirection = direction
+    def pivot(self, speed):
         if not self.atKnownPosition():
             return
         self.rightPivotMotor.clearIaccum()
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Speed)
         self.rightPivotMotor.setPID(0, .001, 0)
-
-        # 0 = up. 1 = down
-        #20000 refers to pivot speed.
-        if pivotDirection < 0:
-            self.rightPivotMotor.set(20000)
-        elif pivotDirection > 0:
-            self.rightPivotMotor.set(-20000)
-        else:
-            self.rightPivotMotor.set(0)
-            
-    def initDefaultCommand(self):
-        '''
-        By default, unless another command is running that requires this
-        subsystem, we will drive via joystick using the max speed stored in
-        Preferences.
-        '''
-        self.setDefaultCommand(ShooterCommand())
+        self.rightPivotMotor.set(speed)
+        
     
     def holdAt(self, position):
         if self.atKnownPosition() == False:
@@ -84,6 +68,10 @@ class Shooter(DebuggableSubsystem):
 
     def setIndexerSpeed(self, speed):
         self.indexWheel.set(speed)
+    
+    def setShooterSpeed(self, speed):
+        self.shooterWheel.setControlMode(CANTalon.ControlMode.Speed)
+        self.shooterWheel.set(speed)
         
     def stopShooter(self):
         self.manualShooter(0)
@@ -110,14 +98,6 @@ class Shooter(DebuggableSubsystem):
         
     def atBottomLimit(self):
         self.rightPivotMotor.isFwdLimitSwitchClosed()
-    
-    def setEncoderPosition(self, position):
-        self.rightPivotMotor.setPosition(position)
-        preferences = Preferences.getInstance()
-        
-    def storeEncoderPosition(self):
-        if self.atKnownPosition():
-            self.setEncoderPosition(self.getHeight())
             
     def hasBall(self):
         return self.ballDetector.get()
@@ -133,11 +113,3 @@ class Shooter(DebuggableSubsystem):
         """
         
         
-    
-    def atKnownPosition(self):
-        if not self.settingsLoaded:
-            preferences = Preferences.getInstance()
-            if (preferences.containsKey("shooterPosition")):
-                    self.rightPivotMotor.setPosition(preferences.getInt("shooterPosition"))
-                    self.settingsLoaded = True
-            
