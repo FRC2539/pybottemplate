@@ -113,7 +113,7 @@ class Config:
 
         try:
             if key in Config.store[table.name]:
-                Config.store[table.name][key] = ast.literal_eval(value)
+                Config.store[table.name][key] = ast.literal_eval(str(value))
         except SyntaxError:
             Config.store[table.name][key] = None
 
