@@ -6,6 +6,8 @@ from controller import logicalaxes
 from custom.config import Config
 
 from commands.drivecommand import DriveCommand
+from commands.shootingcommandgroup import ShootingCommandGroup
+from commands.intakecommand import IntakeCommand
 
 class OI(Subsystem):
     '''Handles joystick (operator input) interaction with the commands.'''
@@ -22,7 +24,6 @@ class OI(Subsystem):
         '''
 
         super().__init__('OI')
-
         self.mainController = LogitechDualShock(0)
 
         logicalaxes.driveX = self.mainController.LeftX
@@ -30,9 +31,11 @@ class OI(Subsystem):
         logicalaxes.driveRotate = self.mainController.RightX
 
         self.mainController.X.toggleWhenPressed(
-            DriveCommand(Config('DriveTrain/preciseSpeed'))
+DriveCommand(Config('DriveTrain/preciseSpeed'))
         )
-
+    
         self.backupController = LogitechDualShock(1)
-        logicalaxes.pivot = self.backupController.LeftY
+        logicalaxes.pivot = self.backupController.RightY
+        self.backupController.RightTrigger.whenPressed(ShootingCommandGroup())
+        self.backupController.RightBumper.toggleWhenPressed(IntakeCommand(10000))
         

@@ -2,18 +2,22 @@ from  wpilib.digitalinput import DigitalInput
 from wpilib.cantalon import CANTalon
 from wpilib.cameraserver import CameraServer
 from wpilib.preferences import Preferences
-from debuggablesubsystem import DebuggableSubsystem
-from commands.shootercommand import ShooterCommand
+from .debuggablesubsystem import DebuggableSubsystem
+from commands.pivotcommand import PivotCommand
+
 
 class Shooter(DebuggableSubsystem):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self):
+        super().__init__('shooter')
         self.ballDetector = DigitalInput(0)
         self.leftPivotMotor = CANTalon(9)
         self.rightPivotMotor = CANTalon(8)
         self.indexWheel = CANTalon(10)
         self.shooterWheel = CANTalon(11)
         self.settingsLoaded = False
+        self.pivotSpeed = 10000
+        self.shootingSpeed = 10000
+        self.shooterIsDone = True
         
         self.indexWheel.setControlMode(CANTalon.ControlMode.PercentVbus)
         # Set brake mode to coast.
@@ -49,6 +53,9 @@ class Shooter(DebuggableSubsystem):
         self.debugSensor("ball detector", self.ballDetector)
         
     
+    def initDefaultCommand(self):
+        self.setDefaultCommand(PivotCommand(self.pivotSpeed))
+        
     def pivot(self, speed):
         if not self.atKnownPosition():
             return
@@ -72,6 +79,10 @@ class Shooter(DebuggableSubsystem):
     def setShooterSpeed(self, speed):
         self.shooterWheel.setControlMode(CANTalon.ControlMode.Speed)
         self.shooterWheel.set(speed)
+    def isShooterDone(self):
+        return self.shooterIsDone
+    def setShooterIsDone(self, done):
+        self.shooterIsDone = done
         
     def stopShooter(self):
         self.manualShooter(0)
