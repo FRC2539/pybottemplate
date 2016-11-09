@@ -10,4 +10,4 @@ class ShootingCommandGroup(CommandGroup):
         super().__init__('ShootingCommandGroup')
         self.addParallel(ShooterCommand(10000))
         self.addSequential(WaitCommand(3))
-        self.addSequential(IndexCommand(10000))
+        self.addSequential(IndexCommand(2500))

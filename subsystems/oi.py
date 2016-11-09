@@ -35,7 +35,6 @@ DriveCommand(Config('DriveTrain/preciseSpeed'))
         )
     
         self.backupController = LogitechDualShock(1)
-        logicalaxes.pivot = self.backupController.RightY
+        logicalaxes.pivot = self.backupController.LeftY
         self.backupController.RightTrigger.whenPressed(ShootingCommandGroup())
-        self.backupController.RightBumper.toggleWhenPressed(IntakeCommand(10000))
-        
+        self.backupController.RightBumper.toggleWhenPressed(IntakeCommand(25))

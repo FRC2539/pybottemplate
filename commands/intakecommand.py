@@ -15,3 +15,4 @@ class IntakeCommand(Command):
     
     def end(self):
         subsystems.shooter.setShooterSpeed(0)
+
