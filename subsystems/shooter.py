@@ -4,16 +4,17 @@ from networktables import NetworkTable
 from wpilib.preferences import Preferences
 from .debuggablesubsystem import DebuggableSubsystem
 from commands.pivotcommand import PivotCommand
+import ports
 
 
 class Shooter(DebuggableSubsystem):
     def __init__(self):
         super().__init__('shooter')
         self.ballDetector = DigitalInput(0)
-        self.leftPivotMotor = CANTalon(9)
-        self.rightPivotMotor = CANTalon(8)
-        self.indexWheel = CANTalon(10)
-        self.shooterWheel = CANTalon(11)
+        self.leftPivotMotor = CANTalon(ports.shooter.leftPivotMotorID)
+        self.rightPivotMotor = CANTalon(ports.shooter.rightPivotMotorID)
+        self.indexWheel = CANTalon(ports.shooter.indexWheelID)
+        self.shooterWheel = CANTalon(ports.shooter.shooterWheelID)
         self.settingsLoaded = False
         self.pivotSpeed = 10000
         self.shootingSpeed = 10000
@@ -32,13 +33,13 @@ class Shooter(DebuggableSubsystem):
         
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Position)
         
-        self.rightPivotMotor.setPID(.003, 0, 0)
+        self.rightPivotMotor.setPID(.005, 0, 0)
         self.rightPivotMotor.configMaxOutputVoltage(4)
-        self.rightPivotMotor.setInverted(True)
+        #self.rightPivotMotor.setInverted(True)
         
         self.leftPivotMotor.setControlMode(CANTalon.ControlMode.Follower)
-        self.leftPivotMotor.set(8)
-        self.leftPivotMotor.reverseSensor(True)
+        self.leftPivotMotor.set(ports.shooter.rightPivotMotorID)
+        self.leftPivotMotor.reverseOutput(True)
 
         targetInfo = NetworkTable.getTable("cameraTarget");
 
@@ -56,16 +57,14 @@ class Shooter(DebuggableSubsystem):
     def pivot(self, speed):
         self.rightPivotMotor.clearIaccum()
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Speed)
-        self.rightPivotMotor.setPID(0, .001, 0)
+        self.rightPivotMotor.setPID(0, .005, 0)
         self.rightPivotMotor.set(speed)
         
     
     def holdAt(self, position):
-        if self.atKnownPosition() == False:
-            return
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Position)
         # pivotHoldPID = 0.003, 0, 0
-        self.rightPivotMotor.setPID(0.003, 0, 0)
+        self.rightPivotMotor.setPID(0.003, .01, 0)
         self.rightPivotMotor.set(position)
 
     def setIndexerSpeed(self, speed):
@@ -101,7 +100,7 @@ class Shooter(DebuggableSubsystem):
         return abs(self.shooterWheel.getClosedLoopError()) < 100
     
     def getHeight(self):
-        self.rightPivotMotor.getPosition()
+        return self.rightPivotMotor.getPosition()
         
     def atTopLimit(self):
         self.rightPivotMotor.isRevLimitSwitchClosed()

@@ -1,7 +1,7 @@
 from commandbased import Command
+from wpilib.preferences import Preferences
 
 import subsystems
-
 from controller import logicalaxes
 
 logicalaxes.registerAxis('pivot')
@@ -15,4 +15,8 @@ class PivotCommand(Command):
         self.pivotSpeed = pivotSpeed
     
     def execute(self):
-        subsystems.shooter.pivot(logicalaxes.pivot.get() * self.pivotSpeed)
+        if(abs(logicalaxes.pivot.get()) == 1):
+            print(logicalaxes.pivot.get())
+            subsystems.shooter.pivot(logicalaxes.pivot.get() * self.pivotSpeed)
+        else:
+            subsystems.shooter.holdAt(subsystems.shooter.getHeight())
