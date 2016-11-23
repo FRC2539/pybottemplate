@@ -14,4 +14,4 @@ class IntakeCommand(Command):
         subsystems.shooter.setShooterSpeed(-self.intakeSpeed)
     
     def end(self):
-        subsystems.shooter.setShooterSpeed(0)
+        subsystems.shooter.stopShooter()

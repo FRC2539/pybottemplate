@@ -18,5 +18,5 @@ class ShooterCommand(Command):
         return subsystems.shooter.isShooterDone()
 
     def end(self):
-        subsystems.shooter.setShooterSpeed(0)
+        subsystems.shooter.stopShooter()
         

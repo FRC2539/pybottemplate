@@ -16,7 +16,6 @@ class PivotCommand(Command):
     
     def execute(self):
         if(abs(logicalaxes.pivot.get()) == 1):
-            print(logicalaxes.pivot.get())
             subsystems.shooter.pivot(logicalaxes.pivot.get() * self.pivotSpeed)
         else:
-            subsystems.shooter.holdAt(subsystems.shooter.getHeight())
+            subsystems.shooter.holdAt(0)

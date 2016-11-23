@@ -35,4 +35,4 @@ class OI(Subsystem):
         self.backupController = LogitechDualShock(1)
         logicalaxes.pivot = self.backupController.LeftY
         self.backupController.RightTrigger.whenPressed(ShootingCommandGroup())
-        self.backupController.RightBumper.toggleWhenPressed(IntakeCommand(25))
+        self.backupController.RightBumper.toggleWhenPressed(IntakeCommand(100))

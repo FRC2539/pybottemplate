@@ -28,7 +28,7 @@ class Shooter(DebuggableSubsystem):
         self.shooterWheel.setControlMode(CANTalon.ControlMode.Speed);
         # Set brake mode to coast.
         self.shooterWheel.enableBrakeMode(False)
-        self.shooterWheel.setPID(0, .01, 0)
+        self.shooterWheel.setPID(.6, .01, 0)
         self.shooterWheel.setInverted(True)
         
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Position)
@@ -64,8 +64,13 @@ class Shooter(DebuggableSubsystem):
     def holdAt(self, position):
         self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Position)
         # pivotHoldPID = 0.003, 0, 0
-        self.rightPivotMotor.setPID(0.003, .01, 0)
+        self.rightPivotMotor.setPID(0.03, 0, 0)
         self.rightPivotMotor.set(position)
+    def stopPivot(self):
+        self.rightPivotMotor.setControlMode(CANTalon.ControlMode.Speed)
+        # pivotHoldPID = 0.003, 0, 0
+        self.rightPivotMotor.setPID(0, 0.1, 0)
+        self.rightPivotMotor.set(0)
 
     def setIndexerSpeed(self, speed):
         self.indexWheel.set(speed)
@@ -73,6 +78,7 @@ class Shooter(DebuggableSubsystem):
     def setShooterSpeed(self, speed):
         self.shooterWheel.setControlMode(CANTalon.ControlMode.Speed)
         self.shooterWheel.set(speed)
+        print(self.shooterWheel.getSpeed())
 
 
     def isShooterDone(self):
