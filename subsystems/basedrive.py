@@ -31,7 +31,7 @@ class BaseDrive(DebuggableSubsystem):
         for motor in self.motors:
             motor.setSafetyEnabled(False)
             motor.enableBrakeMode(False)
-
+        self.ticksPerRotation = 100
         '''
         Subclasses should configure motors correctly and populate activeMotors.
         '''
@@ -76,8 +76,14 @@ class BaseDrive(DebuggableSubsystem):
         if [x, y, rotate] == self.lastInputs:
             return
 
+        self._setMode(CANTalon.ControlMode.Speed)
         self.lastInputs = [x, y, rotate]
-
+        
+        # Prevent drift caused by small input values
+        x -= x % .01
+        y -= y % .01
+        rotate -= rotate % .01
+        
         speeds = self._calculateSpeeds(x, y, rotate)
 
         '''Prevent speeds > 0'''
@@ -107,6 +113,13 @@ class BaseDrive(DebuggableSubsystem):
                 motor.set(speed * self.maxPercentVBus)
 
 
+    def moveForRotations(self, rotations):
+        ticks = rotations * self.ticksPerRotation
+        for motor in self.motors:
+            motor.setPosition(ticks)
+
+        
+        
     def stop(self):
         '''A nice shortcut for calling move with all zeroes.'''
 

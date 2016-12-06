@@ -8,6 +8,7 @@ from custom.config import Config
 from commands.drivecommand import DriveCommand
 from commands.shootingcommandgroup import ShootingCommandGroup
 from commands.intakecommand import IntakeCommand
+from commands.autonomous.moveAutonomousCommand import MoveAutonomousCommand
 
 class OI(Subsystem):
     '''Handles joystick (operator input) interaction with the commands.'''
@@ -29,6 +30,7 @@ class OI(Subsystem):
         logicalaxes.driveX = self.mainController.LeftX
         logicalaxes.driveY = self.mainController.LeftY
         logicalaxes.driveRotate = self.mainController.RightX
+        self.mainController.A.whenPressed(MoveAutonomousCommand())
 
         self.mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     
