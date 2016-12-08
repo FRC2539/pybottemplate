@@ -9,9 +9,9 @@ from wpilib.smartdashboard import SmartDashboard
 from wpilib.command import Scheduler
 
 from commands.autonomous.default import DefaultAutonomousCommandGroup
+from commands.autonomous.turncommand import TurnCommand
 from commands.clearalertcommand import ClearAlertCommand
 
-is_shown = False
 autonChooser = None
 clearer = ClearAlertCommand()
 
@@ -23,12 +23,10 @@ def init():
     have been created. Do not call it more than once.
     '''
 
-    global is_shown, autonChooser
+    global autonChooser
 
-    if is_shown and not RobotBase.isSimulation():
+    if autonChooser is not None and not RobotBase.isSimulation():
         raise RuntimeError('Driver HUD has already been initialized')
-
-    is_shown = True
 
     '''
     Add commands to the autonChooser to make them available for selection by the
@@ -37,6 +35,8 @@ def init():
     '''
     autonChooser = SendableChooser()
     autonChooser.addDefault('Do Nothing', DefaultAutonomousCommandGroup())
+    autonChooser.addObject('Turn Left', TurnCommand(-90))
+    autonChooser.addObject('Turn Right', TurnCommand(90))
 
     SmartDashboard.putData('Autonomous Program', autonChooser)
 
@@ -53,9 +53,9 @@ def getAutonomousProgram():
     calling scope to start and cancel the command as needed.
     '''
 
-    global is_shown, autonChooser
+    global autonChooser
 
-    if not is_shown:
+    if autonChooser is None:
         raise RuntimeError('Cannot select auton before HUD initializiation')
 
     return autonChooser.getSelected()

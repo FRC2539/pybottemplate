@@ -23,6 +23,9 @@ class Config:
             self.table = 'Config'
             self.key = key
 
+        if (self.table, self.key) in Config.keys:
+            return
+
         Config.keys.append((self.table, self.key))
 
         if self.table not in Config.tables:

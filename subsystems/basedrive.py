@@ -31,7 +31,7 @@ class BaseDrive(DebuggableSubsystem):
         for motor in self.motors:
             motor.setSafetyEnabled(False)
             motor.enableBrakeMode(False)
-        self.ticksPerRotation = 100
+
         '''
         Subclasses should configure motors correctly and populate activeMotors.
         '''
@@ -76,17 +76,16 @@ class BaseDrive(DebuggableSubsystem):
         if [x, y, rotate] == self.lastInputs:
             return
 
-        self._setMode(CANTalon.ControlMode.Speed)
         self.lastInputs = [x, y, rotate]
-        
+
         # Prevent drift caused by small input values
         x -= x % .01
         y -= y % .01
         rotate -= rotate % .01
-        
+
         speeds = self._calculateSpeeds(x, y, rotate)
 
-        '''Prevent speeds > 0'''
+        '''Prevent speeds > 1'''
         maxSpeed = 0
         for speed in speeds:
             maxSpeed = max(abs(speed), maxSpeed)
@@ -114,12 +113,40 @@ class BaseDrive(DebuggableSubsystem):
 
 
     def moveForRotations(self, rotations):
+        self.ticksPerRotation = 100
         ticks = rotations * self.ticksPerRotation
         for motor in self.motors:
             motor.setPosition(ticks)
 
-        
-        
+
+    def setPositions(self, positions):
+        '''
+        Have the motors move to the given positions. There should be one
+        position per active motor. Extra positions will be ignored.
+        '''
+
+        if not self.useEncoders:
+            raise RuntimeError('Cannot set position. Encoders are disabled.')
+
+        self._setMode(CANTalon.ControlMode.Position)
+        for motor, position in zip(self.activeMotors, positions):
+            motor.set(position)
+
+
+    def atPosition(self, tolerance=10):
+        '''
+        Check setpoint error to see if it is below the given tolerance.
+        '''
+
+        error = 0
+        for motor in self.activeMotors:
+            error += abs(motor.getError())
+
+        error /= len(self.activeMotors)
+
+        return error <= tolerance
+
+
     def stop(self):
         '''A nice shortcut for calling move with all zeroes.'''
 

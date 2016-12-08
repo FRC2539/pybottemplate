@@ -1,5 +1,4 @@
 from commandbased import Command
-from wpilib.preferences import Preferences
 
 import subsystems
 from controller import logicalaxes
