@@ -47,6 +47,7 @@ class BaseDrive(DebuggableSubsystem):
 
         self.setUseEncoders()
         self.maxSpeed = 1
+        self.ticksPerRotation = 100
 
         '''Add items that can be debugged in Test mode.'''
         self.debugSensor('navX', self.navX)
@@ -84,7 +85,6 @@ class BaseDrive(DebuggableSubsystem):
         rotate -= rotate % .01
 
         speeds = self._calculateSpeeds(x, y, rotate)
-
         '''Prevent speeds > 1'''
         maxSpeed = 0
         for speed in speeds:
@@ -110,13 +110,6 @@ class BaseDrive(DebuggableSubsystem):
         else:
             for motor, speed in zip(self.activeMotors, speeds):
                 motor.set(speed * self.maxPercentVBus)
-
-
-    def moveForRotations(self, rotations):
-        self.ticksPerRotation = 100
-        ticks = rotations * self.ticksPerRotation
-        for motor in self.motors:
-            motor.setPosition(ticks)
 
 
     def setPositions(self, positions):
@@ -205,7 +198,7 @@ class BaseDrive(DebuggableSubsystem):
         if useEncoders:
             self._setMode(CANTalon.ControlMode.Speed)
         else:
-            self._setMode(CANTalon.ControlMode.PercentVBus)
+            self._setMode(CANTalon.ControlMode.PercentVbus)
 
 
     def setSpeedLimit(self, speed):
@@ -227,7 +220,7 @@ class BaseDrive(DebuggableSubsystem):
         if self.useEncoders:
             self._setMode(CANTalon.ControlMode.Speed)
         else:
-            self._setMode(CANTalon.ControlMode.PercentVBus)
+            self._setMode(CANTalon.ControlMode.PercentVbus)
 
 
     def _setMode(self, mode):

@@ -8,18 +8,18 @@ from controller import logicalaxes
 class MoveAutonomousCommand(Command):
     def __init__(self):
         super().__init__('MoveAutonomousCommand')
-        self.targetPosition = 0
+        self.moveDistance = 100
         self.requires(subsystems.drivetrain)
     
     def initialize(self):
-        self.targetPosition = subsystems.drivetrain.getPosition + subsystems.drivetrain.ticksPerRotation
-        subsystems.drivetrain._setMode(CANTalon.ControlMode.Position)
-        subsystems.drivetrain.moveForRotations(1)
+        self.targetPositions = subsystems.drivetrain.getPositions()
+        for position in self.targetPositions:
+            position += self.moveDistance
+        subsystems.drivetrain.setPositions(self.targetPositions)
     
     def isFinished(self):
-        if abs(subsystems.drivetrain.getPosition - self.targetPosition) < 10:
-            return True
+        return subsystems.drivetrain.atPosition()
     
     def end(self):
-        subsystems.drivetrain._setMode(CANTalon.ControlMode.Speed)
+        subsystems.drivetrain.stop()
         
