@@ -47,7 +47,6 @@ class BaseDrive(DebuggableSubsystem):
 
         self.setUseEncoders()
         self.maxSpeed = 1
-        self.ticksPerRotation = 100
 
         '''Add items that can be debugged in Test mode.'''
         self.debugSensor('navX', self.navX)
