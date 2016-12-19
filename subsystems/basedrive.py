@@ -1,5 +1,6 @@
 from .debuggablesubsystem import DebuggableSubsystem
 from wpilib.cantalon import CANTalon
+from networktables import NetworkTable
 
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
 
@@ -47,6 +48,11 @@ class BaseDrive(DebuggableSubsystem):
 
         self.setUseEncoders()
         self.maxSpeed = 1
+
+        '''Allow changing CAN Talon settings from dashboard'''
+        self._publishPID('Speed', 0)
+        self._publishPID('Position', 1)
+
 
         '''Add items that can be debugged in Test mode.'''
         self.debugSensor('navX', self.navX)
@@ -237,6 +243,53 @@ class BaseDrive(DebuggableSubsystem):
                 motor.clearIaccum()
 
             motor.setControlMode(mode)
+
+
+    def _publishPID(self, table, profile):
+        '''
+        Read the PID value from the first active CAN Talon and publish it to the
+        passed NetworkTable.
+        '''
+
+        table = NetworkTable.getTable('DriveTrain/%s' % table)
+
+        talon = self.activeMotors[0]
+
+        talon.setProfile(profile)
+        table.putNumber('P', talon.getP())
+        table.putNumber('I', talon.getI())
+        table.putNumber('D', talon.getD())
+        table.putNumber('F', talon.getF())
+        table.putNumber('IZone', talon.getIZone())
+        table.putNumber('RampRate', talon.getCloseLoopRampRate())
+
+        table.addTableListener(self._PIDListener(profile))
+
+
+    def _PIDListener(self, profile):
+        '''Provides as easy way to make sure we update the right profile.'''
+
+        def updatePID(table, key, value, isNew):
+            '''
+            Loops over all active motors and updates the appropriate setting. To
+            avoid using a very long if structure inside the loop, we use getattr
+            to access the methods of the motor by name.
+            '''
+
+            funcs = {
+                'P': 'setP',
+                'I': 'setI',
+                'D': 'setD',
+                'F': 'setF',
+                'IZone': 'setIZone',
+                'RampRate': 'setCloseLoopRampRate'
+            }
+
+            for motor in self.activeMotors:
+                motor.setProfile(profile)
+                getattr(motor, funcs[key])(value)
+
+        return updatePID
 
 
     def _configureMotors(self):
