@@ -1,24 +1,24 @@
 from commandbased import Command
-from wpilib.preferences import Preferences
-from wpilib.cantalon import CANTalon
-
+from custom.config import Config
 import subsystems
-from controller import logicalaxes
 
 class MoveAutonomousCommand(Command):
-    def __init__(self):
-        super().__init__('MoveAutonomousCommand')
-        self.moveDistance = 100
+    def __init__(self, distance):
+        super().__init__('MoveAutonomousCommand', 0.2)
+        self.moveDistance = distance * float(Config("DriveTrain/ticksPerInch"))
         self.requires(subsystems.drivetrain)
     
     def initialize(self):
-        self.targetPositions = subsystems.drivetrain.getPositions()
-        for position in self.targetPositions:
-            position += self.moveDistance
-        subsystems.drivetrain.setPositions(self.targetPositions)
+        targetPositions = []
+        sign = 1
+        for position in subsystems.drivetrain.getPositions():
+            targetPositions.append(position + self.moveDistance * sign)
+            sign *= -1
+
+        subsystems.drivetrain.setPositions(targetPositions)
     
     def isFinished(self):
-        return subsystems.drivetrain.atPosition()
+        return self.isTimedOut() and subsystems.drivetrain.atPosition()
     
     def end(self):
         subsystems.drivetrain.stop()

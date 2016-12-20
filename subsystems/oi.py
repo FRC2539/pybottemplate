@@ -30,7 +30,7 @@ class OI(Subsystem):
         logicalaxes.driveX = self.mainController.LeftX
         logicalaxes.driveY = self.mainController.LeftY
         logicalaxes.driveRotate = self.mainController.RightX
-        self.mainController.A.whenPressed(MoveAutonomousCommand())
+        self.mainController.A.whenPressed(MoveAutonomousCommand(36))
 
         self.mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     

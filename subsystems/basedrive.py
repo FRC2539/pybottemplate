@@ -234,13 +234,19 @@ class BaseDrive(DebuggableSubsystem):
         depending on the mode.
         '''
 
+        maxVoltage = self.activeMotors[0].getBusVoltage()
+
         for motor in self.activeMotors:
+            motor.configMaxOutputVoltage(maxVoltage)
+
             if mode == CANTalon.ControlMode.Position:
                 motor.setProfile(1)
+                motor.configMaxOutputVoltage(maxVoltage / 2)
 
             elif mode == CANTalon.ControlMode.Speed:
                 motor.setProfile(0)
                 motor.clearIaccum()
+
 
             motor.setControlMode(mode)
 

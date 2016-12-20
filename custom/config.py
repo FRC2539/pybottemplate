@@ -150,7 +150,7 @@ class Config:
         try:
             return float(Config.store[self.table][self.key])
         except TypeError:
-            return 0
+            return 0.0
 
 
     def __int__(self):
