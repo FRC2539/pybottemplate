@@ -1,4 +1,4 @@
-from commandbased import Command
+from .movecommand import MoveCommand
 
 import subsystems
 from custom.config import Config
@@ -6,15 +6,11 @@ from custom.config import Config
 import math
 
 
-class TurnCommand(Command):
+class TurnCommand(MoveCommand):
     '''Allows autonomous turning using the drive base encoders.'''
 
     def __init__(self, degrees):
-        super().__init__('Turn %d degrees' % degrees)
-
-        self.degrees = degrees
-
-        self.requires(subsystems.drivetrain)
+        super().__init__(degrees, 'Turn %f degrees' % degrees)
 
 
     def initialize(self):
@@ -28,10 +24,6 @@ class TurnCommand(Command):
         subsystems.drivetrain.setPositions(newPositions)
 
 
-    def isFinished(self):
-        return subsystems.drivetrain.atPosition()
-
-
     def _calculateDisplacement(self):
         '''
         In order to avoid having a separate ticksPerDegree, we calculate it
@@ -39,6 +31,6 @@ class TurnCommand(Command):
         '''
 
         inchesPerDegree = math.pi * Config('DriveTrain/width') / 360
-        totalDistanceInInches = self.degrees * inchesPerDegree
+        totalDistanceInInches = self.distance * inchesPerDegree
 
         return totalDistanceInInches * Config('DriveTrain/ticksPerInch')
