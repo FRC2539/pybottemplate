@@ -1,4 +1,4 @@
-from commandbased import Command
+from wpilib.command import Command
 from custom.config import Config
 import subsystems
 
