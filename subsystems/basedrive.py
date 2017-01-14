@@ -1,5 +1,5 @@
 from .debuggablesubsystem import DebuggableSubsystem
-from wpilib.cantalon import CANTalon
+from ctre import CANTalon
 from networktables import NetworkTable
 
 from robotpy_ext.common_drivers.navx.ahrs import AHRS

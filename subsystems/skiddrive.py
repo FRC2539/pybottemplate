@@ -1,5 +1,5 @@
 from .basedrive import BaseDrive
-from wpilib.cantalon import CANTalon
+from ctre import CANTalon
 from wpilib.robotdrive import RobotDrive
 import ports
 
