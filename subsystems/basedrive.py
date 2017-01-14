@@ -1,9 +1,8 @@
 from .debuggablesubsystem import DebuggableSubsystem
 from ctre import CANTalon
 from networktables import NetworkTable
-
+import math
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
-
 from custom.config import Config
 from commands.drivecommand import DriveCommand
 import ports
@@ -69,7 +68,7 @@ class BaseDrive(DebuggableSubsystem):
         subsystem, we will drive via joystick using the max speed stored in
         Config.
         '''
-        self.setDefaultCommand(DriveCommand(Config('DriveTrain/maxSpeed')))
+        self.setDefaultCommand(DriveCommand(Config('DriveTrain/manualMaxSpeed')))
 
 
     def move(self, x, y, rotate):
@@ -85,9 +84,9 @@ class BaseDrive(DebuggableSubsystem):
         self.lastInputs = [x, y, rotate]
 
         # Prevent drift caused by small input values
-        x -= x % .01
-        y -= y % .01
-        rotate -= rotate % .01
+        x = math.floor(x / .01) * .01
+        y = math.floor(y / .01) * .01
+        rotate = math.floor(rotate / .01) * .01
 
         speeds = self._calculateSpeeds(x, y, rotate)
         '''Prevent speeds > 1'''
@@ -220,7 +219,7 @@ class BaseDrive(DebuggableSubsystem):
             self.maxSpeed = speed
 
         '''If we can't use encoders, attempt to approximate that speed.'''
-        self.maxPercentVBus = speed / self.maxSpeed
+        self.maxPercentVBus = speed / 100.0
 
         if self.useEncoders:
             self._setMode(CANTalon.ControlMode.Speed)
