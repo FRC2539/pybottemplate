@@ -91,3 +91,56 @@ class Config:
             return self.key
         except TypeError:
             return str(self.getValue())
+
+
+    '''
+    Treat config values like normal numbers, if possible.
+    '''
+    def __lt__(self, other):
+        return self.getValue() < other
+
+    def __le__(self, other):
+        return self.getValue() <= other
+
+    def __eq__(self, other):
+        return self.getValue() == other
+
+    def __ge__(self, other):
+        return self.getValue() >= other
+
+    def __gt__(self, other):
+        return self.getValue() > other
+
+    def __add__(self, other):
+        return self.getValue() + other
+
+    def __sub__(self, other):
+        return self.getValue() - other
+
+    def __rsub__(self, other):
+        return other - self.getValue()
+
+    def __mul__(self, other):
+        return self.getValue() * other
+
+    def __truediv__(self, other):
+        return self.getValue() / other
+
+    def __rtruediv__(self, other):
+        return other / self.getValue()
+
+    def __mod__(self, other):
+        return self.getValue() % other
+
+    def __rmod__(self, other):
+        return other % self.getValue()
+
+    def __neg__(self):
+        return -1 * self.getValue()
+
+    def __abs__(self):
+        return abs(self.getValue())
+
+    __pos__ = getValue
+    __radd__ = __add__
+    __rmul__ = __mul__
