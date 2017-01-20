@@ -1,6 +1,4 @@
 from networktables import NetworkTables
-from ntcore.constants import NT_PERSISTENT
-
 
 class Config:
     '''
@@ -10,52 +8,58 @@ class Config:
     '''
 
     _values = {}
+    _nt = None
+    _sep = NetworkTables.PATH_SEPARATOR
 
     def __init__(self, key, default=None):
         '''The key is the name that will be used in NetworkTables.'''
 
-        if '/' not in key:
-            key = '/Config/%s' % key
+        if self._sep not in key:
+            key = 'Config%s%s' % (self._sep, key)
 
-        if not key.startswith('/'):
-            key = '/%s' % key
+        if not key.startswith(self._sep):
+            key = '%s%s' % (self._sep, key)
 
         self.key = key
         if key in Config._values:
             return
 
-        value = NetworkTables._api.getEntryValue(self.key)
+        if Config._nt is None:
+            Config._nt = NetworkTables.getGlobalTable()
 
-        if not value and default is None:
+        try:
+            value = Config._nt.getValue(self.key)
+        except KeyError:
+            value = None
+
+        if value is None and default is None:
             Config._values[self.key] = None
         else:
-            Config._values[self.key] = NetworkTables.getGlobalAutoUpdateValue(
+            Config._values[self.key] = Config._nt.getAutoUpdateValue(
                 self.key,
-                value.value if value else default,
+                value if value is not None else default,
                 False
             )
 
             '''Make entry persistent so it is saved to the roboRIO.'''
-            flags = NetworkTables._api.getEntryFlags(self.key) | NT_PERSISTENT
-            NetworkTables._api.setEntryFlags(self.key, flags)
+            Config._nt.setPersistent(self.key)
 
 
     def getValue(self):
         if Config._values[self.key] is None:
-            value = NetworkTables._api.getEntryValue(self.key)
-            if not value:
+            try:
+                value = Config._nt.getValue(self.key)
+            except KeyError:
                 return None
 
-            Config._values[self.key] = NetworkTables.getGlobalAutoUpdateValue(
+            Config._values[self.key] = Config._nt.getAutoUpdateValue(
                 self.key,
-                value.value,
+                value,
                 False
             )
+            Config._nt.setPersistent(self.key)
 
-            flags = NetworkTables._api.getEntryFlags(self.key) | NT_PERSISTENT
-            NetworkTables._api.setEntryFlags(self.key, flags)
-
-            return value.value
+            return value
 
         else:
             return Config._values[self.key].get()

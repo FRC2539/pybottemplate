@@ -16,8 +16,7 @@ class DriveCommand(Command):
 
 
     def initialize(self):
-        subsystems.drivetrain.setSpeedLimit(float(self.speedLimit))
-        print (float(self.speedLimit))
+        subsystems.drivetrain.setSpeedLimit(self.speedLimit)
         subsystems.drivetrain.setUseEncoders(False)
 
 

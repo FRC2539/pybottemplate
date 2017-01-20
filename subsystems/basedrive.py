@@ -1,7 +1,7 @@
 from .debuggablesubsystem import DebuggableSubsystem
 from ctre import CANTalon
 from networktables import NetworkTable
-import math
+
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
 from custom.config import Config
 from commands.drivecommand import DriveCommand
@@ -84,11 +84,15 @@ class BaseDrive(DebuggableSubsystem):
         self.lastInputs = [x, y, rotate]
 
         # Prevent drift caused by small input values
-        x = math.floor(x / .01) * .01
-        y = math.floor(y / .01) * .01
-        rotate = math.floor(rotate / .01) * .01
+        if abs(x) < .01:
+            x = 0
+        if abs(y) < .01:
+            y = 0
+        if abs(rotate) < .01:
+            rotate = 0
 
         speeds = self._calculateSpeeds(x, y, rotate)
+
         '''Prevent speeds > 1'''
         maxSpeed = 0
         for speed in speeds:
@@ -219,7 +223,7 @@ class BaseDrive(DebuggableSubsystem):
             self.maxSpeed = speed
 
         '''If we can't use encoders, attempt to approximate that speed.'''
-        self.maxPercentVBus = speed / 100.0
+        self.maxPercentVBus = speed / self.maxSpeed
 
         if self.useEncoders:
             self._setMode(CANTalon.ControlMode.Speed)
