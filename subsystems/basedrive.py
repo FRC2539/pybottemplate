@@ -68,7 +68,7 @@ class BaseDrive(DebuggableSubsystem):
         subsystem, we will drive via joystick using the max speed stored in
         Config.
         '''
-        self.setDefaultCommand(DriveCommand(Config('DriveTrain/manualMaxSpeed')))
+        self.setDefaultCommand(DriveCommand(Config('DriveTrain/maxSpeed')))
 
 
     def move(self, x, y, rotate):
