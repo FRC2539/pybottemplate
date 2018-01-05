@@ -1,0 +1,61 @@
+#! /bin/bash
+
+# Keep repository up-to-date with changes
+function checkOnline
+{
+    curl --silent --retry 3 --retry-delay 1 --head http://google.com > /dev/null
+    if [[ "$?" -ne 0 ]]; then
+        exit
+    fi
+}
+
+
+function doUpdate
+{
+    if [[ "$1" != "envrc" ]]; then
+        # Install any new git hooks
+        root=`git rev-parse --show-toplevel`
+        ln -sf $root/hooks/* $root/.git/hooks/
+
+        checkOnline
+
+        # Install any new requirements
+        pip install -r $PWD/requirements.txt > /dev/null
+
+        # Re-enable direnv if there were .envrc changes
+        if [[ `which direnv` ]]; then
+            if [[ `direnv status | grep 'Found RC allowed false'` ]]; then
+                direnv allow
+                return
+            fi
+        fi
+    fi
+
+    # Update all modules
+    pip list --outdated --format=freeze --disable-pip-version-check | grep -v '^\-e' > .pipup
+
+    if [[ $? -eq 0 ]]; then
+        cat .pipup | cut -d = -f 1  | xargs -n1 pip install -U --disable-pip-version-check > /dev/null
+    fi
+
+    rm -f .pipup
+}
+
+if [[ "$1" == "envrc" ]]; then
+    # Called from .envrc to update pip packages
+    checkOnline
+    doUpdate envrc
+else
+    if [[ "$1" != "force" ]]; then
+        # https://twigstechtips.blogspot.com/2016/03/git-post-merge-hook-to-detect-when.html
+        # This is an actual pull. See if the post-merge hook has changed.
+        changedHook="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "^hooks/post-merge$")"
+        if [[ $changedHook ]]; then
+            # The hook has changed. Run the new one and stop this one.
+            root=`git rev-parse --show-toplevel`
+            bash $root/$changedHook force
+            exit
+        fi
+    fi
+    doUpdate &
+fi

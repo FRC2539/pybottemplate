@@ -17,7 +17,6 @@ class DriveCommand(Command):
 
     def initialize(self):
         subsystems.drivetrain.setSpeedLimit(self.speedLimit)
-        subsystems.drivetrain.setUseEncoders(False)
 
 
     def execute(self):
@@ -26,7 +25,3 @@ class DriveCommand(Command):
             logicalaxes.driveY.get(),
             logicalaxes.driveRotate.get()
         )
-
-
-    def end(self):
-        subsystems.drivetrain.setUseEncoders()

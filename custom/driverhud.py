@@ -3,18 +3,11 @@ The DriveHUD displays useful information on the driver dashboard, and can read
 information from the dashboard and provide it to the program.
 '''
 
-
 from wpilib.sendablechooser import SendableChooser
 from wpilib.smartdashboard import SmartDashboard
 from wpilib.command import Scheduler
 
-from commands.autonomous.default import DefaultAutonomousCommandGroup
-from commands.autonomous.movecommand import MoveCommand
-from commands.autonomous.turncommand import TurnCommand
-from commands.clearalertcommand import ClearAlertCommand
-
 autonChooser = None
-clearer = ClearAlertCommand()
 
 from wpilib.robotbase import RobotBase
 
@@ -29,24 +22,21 @@ def init():
     if autonChooser is not None and not RobotBase.isSimulation():
         raise RuntimeError('Driver HUD has already been initialized')
 
+    # Import here to avoid circular import
+    from commands.autonomouscommandgroup import AutonomousCommandGroup
+
     '''
     Add commands to the autonChooser to make them available for selection by the
     driver. It is best to choose a command that will not break anything if run
     at the wrong time as the default command.
     '''
     autonChooser = SendableChooser()
-    autonChooser.addDefault('Do Nothing', DefaultAutonomousCommandGroup())
-    autonChooser.addObject('Turn Left', TurnCommand(-90))
-    autonChooser.addObject('Turn Right', TurnCommand(90))
-    autonChooser.addObject('Drive Forward', MoveCommand(48))
+    autonChooser.addDefault('Autonomous', AutonomousCommandGroup())
 
     SmartDashboard.putData('Autonomous Program', autonChooser)
 
     '''Display all currently running commands.'''
     SmartDashboard.putData('Active Commands', Scheduler.getInstance())
-
-    '''Notices to show to the driver.'''
-    SmartDashboard.putString('Alerts', '')
 
 
 def getAutonomousProgram():
@@ -62,17 +52,25 @@ def getAutonomousProgram():
 
     return autonChooser.getSelected()
 
+def showCommand(cmd):
+    '''Display the given command on the dashboard.'''
 
-def showAlert(msg):
-    '''
-    Display an alert on the dashboard. It will disappear after a short time.
-    '''
+    name = str(cmd)
+    name.replace('/', '_')
+    SmartDashboard.putData('Commands/%s' % name, cmd)
 
-    global clearer
 
-    SmartDashboard.putString('Alerts', msg)
-    if clearer.isRunning():
-        clearer.cancel()
+def showAlert(msg, type='Alerts'):
+    '''Display a text notification on the dashboard.'''
 
-    clearer.start()
+    messages = SmartDashboard.getStringArray(type, [])
+    messages = [x for x in messages if x]
+    messages.append(msg)
+    SmartDashboard.putStringArray(
+        type,
+        messages
+    )
 
+
+def showInfo(msg):
+    showAlert(msg, 'Info')

@@ -13,10 +13,11 @@ class SkidDrive(BaseDrive):
         self.activeMotors = self.motors[0:2]
 
         '''Make the back motors follow the front.'''
-        self.motors[2].setControlMode(CANTalon.ControlMode.Follower)
-        self.motors[2].set(ports.drivetrain.frontLeftMotorID)
-        self.motors[3].setControlMode(CANTalon.ControlMode.Follower)
-        self.motors[3].set(ports.drivetrain.frontRightMotorID)
+        if len(self.motors) == 4:
+            self.motors[2].setControlMode(CANTalon.ControlMode.Follower)
+            self.motors[2].set(ports.drivetrain.frontLeftMotorID)
+            self.motors[3].setControlMode(CANTalon.ControlMode.Follower)
+            self.motors[3].set(ports.drivetrain.frontRightMotorID)
 
         '''Invert the left side.'''
         self.motors[RobotDrive.MotorType.kFrontLeft].reverseSensor(True)

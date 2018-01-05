@@ -1,0 +1,55 @@
+#! /bin/bash
+
+# Some basic sanity checks to keep our code base sane
+# You can see all possible hooks in the .git/hooks directory
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+        against=HEAD
+else
+        # Initial commit: diff against an empty tree object
+        against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if test $(git diff --cached --name-only --diff-filter=A -z $against |
+          LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+then
+        cat <<\EOF
+Error: You may not commit a file with a non-ASCII filename
+EOF
+
+        exit 1
+fi
+
+# Run robot.py test on a clean copy to ensure that the code being committed
+# passes basic sanity checks
+root=`git rev-parse --show-toplevel`
+newroot=`mktemp -d`
+repo=`basename $root`
+cp -r $root $newroot
+cd $newroot/$repo
+git checkout -- .
+git clean -fqdx
+if [[ ! -d "$newroot/tests" ]]; then
+    ln -s $root/tests $newroot/$repo/
+fi
+# NOTE: In testing this continues using the repo's virtualenv, but it's possible
+# that won't always happen.
+./robot.py test 1> /dev/null 2> "$newroot/test-output.txt"
+if [[ $? -ne 0 ]]; then
+    cat "$newroot/test-output.txt"
+    cd - > /dev/null
+    rm -rf "$newroot"
+    exit 1
+fi
+cd - > /dev/null
+rm -rf $newroot
+
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached $against --

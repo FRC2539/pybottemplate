@@ -8,5 +8,3 @@ class DriveTrain(SkidDrive):
 
     def __init__(self):
         super().__init__('DriveTrain')
-
-

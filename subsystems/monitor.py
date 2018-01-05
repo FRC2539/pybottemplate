@@ -1,6 +1,5 @@
 from wpilib.command.subsystem import Subsystem
 
-from commands.monitorcommand import MonitorCommand
 
 class Monitor(Subsystem):
     '''Exists to observe system state via its default command.'''
@@ -10,5 +9,7 @@ class Monitor(Subsystem):
 
 
     def initDefaultCommand(self):
+        from commands.monitorcommand import MonitorCommand
+
         self.setDefaultCommand(MonitorCommand())
 

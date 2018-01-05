@@ -8,7 +8,6 @@ from wpilib.robotbase import RobotBase
 
 from .drivetrain import DriveTrain
 from .monitor import Monitor
-from .oi import OI
 
 drivetrain = None
 monitor = None
@@ -30,9 +29,3 @@ def init():
 
     drivetrain = DriveTrain()
     monitor = Monitor()
-
-    '''
-    Since OI instantiates commands as part of its construction, and those
-    commands need access to the subsystems, OI must be instantiated last.
-    '''
-    OI()
