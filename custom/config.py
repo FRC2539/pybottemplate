@@ -17,8 +17,8 @@ class Config:
         if self._sep not in key:
             key = 'Config%s%s' % (self._sep, key)
 
-        if not key.startswith(self._sep):
-            key = '%s%s' % (self._sep, key)
+        if key.startswith(self._sep):
+            key = key[1:]
 
         self.key = key
         if key in Config._values:
@@ -28,7 +28,7 @@ class Config:
             Config._nt = NetworkTables.getGlobalTable()
 
         try:
-            value = Config._nt.getValue(self.key)
+            value = Config._nt.getValue(self.key, None)
         except KeyError:
             value = None
 

@@ -26,7 +26,7 @@ class MecanumDrive(BaseDrive):
 
         self.isFieldOriented = isFieldOriented
 
-    def _configureMotors(self):
+    #def _configureMotors(self):
         '''All four motors are active in a mecanum system.'''
 
         self.activeMotors = self.motors
