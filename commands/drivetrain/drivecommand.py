@@ -20,9 +20,8 @@ class DriveCommand(Command):
 
 
     def execute(self):
-        ##Need to fix axes, the below code is incorrect.
         subsystems.drivetrain.move(
-            logicalaxes.driveX.getLeftX(),
-            logicalaxes.driveY.getLeftY(),
-            logicalaxes.driveRotate.getRightRotate()
+            logicalaxes.driveX.get(),
+            logicalaxes.driveY.get(),
+            logicalaxes.driveRotate.get()
         )

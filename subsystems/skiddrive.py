@@ -1,6 +1,5 @@
 from .basedrive import BaseDrive
 from ctre._impl import ControlMode
-from ctre.talonsrx import TalonSRX
 from wpilib.robotdrive import RobotDrive
 import ports
 
@@ -24,4 +23,3 @@ class SkidDrive(BaseDrive):
 
     def _calculateSpeeds(self, x, y, rotate):
         return [y + rotate, -y + rotate]
-

@@ -29,4 +29,3 @@ def init():
 
     drivetrain = DriveTrain()
     monitor = Monitor()
-    drivetrain.setUseEncoders(False)

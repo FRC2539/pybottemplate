@@ -1,11 +1,14 @@
 from .debuggablesubsystem import DebuggableSubsystem
-from ctre.talonsrx import TalonSRX
-from networktables import NetworkTables
+
 import math
-from ctre._impl import ControlMode
+
+from networktables import NetworkTables
+from ctre import ControlMode, NeutralMode, WPI_TalonSRX
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
+
 from custom.config import Config
 import ports
+
 
 class BaseDrive(DebuggableSubsystem):
     '''
@@ -23,25 +26,25 @@ class BaseDrive(DebuggableSubsystem):
         '''
         try:
             self.motors = [
-                TalonSRX(ports.drivetrain.frontLeftMotorID),
-                TalonSRX(ports.drivetrain.frontRightMotorID),
-                TalonSRX(ports.drivetrain.backLeftMotorID),
-                TalonSRX(ports.drivetrain.backRightMotorID),
+                WPI_TalonSRX(ports.drivetrain.frontLeftMotorID),
+                WPI_TalonSRX(ports.drivetrain.frontRightMotorID),
+                WPI_TalonSRX(ports.drivetrain.backLeftMotorID),
+                WPI_TalonSRX(ports.drivetrain.backRightMotorID),
             ]
 
         except AttributeError:
             self.motors = [
-                TalonSRX(ports.drivetrain.leftMotorID),
-                TalonSRX(ports.drivetrain.rightMotorID),
+                WPI_TalonSRX(ports.drivetrain.leftMotorID),
+                WPI_TalonSRX(ports.drivetrain.rightMotorID),
             ]
 
         for motor in self.motors:
-            #motor.setNeutralMode(False)
-            pass
+            motor.setNeutralMode(NeutralMode.Coast)
+            motor.setSafetyEnabled(False)
+
         '''
         Subclasses should configure motors correctly and populate activeMotors.
         '''
-
         self.activeMotors = []
         self._configureMotors()
 
@@ -65,14 +68,14 @@ class BaseDrive(DebuggableSubsystem):
         '''Add items that can be debugged in Test mode.'''
         self.debugSensor('navX', self.navX)
 
-       # self.debugMotor('Front Left Motor', self.motors[0])
-        #self.debugMotor('Front Right Motor', self.motors[1])
+        self.debugMotor('Front Left Motor', self.motors[0])
+        self.debugMotor('Front Right Motor', self.motors[1])
 
-        #try:
-             #self.debugMotor('Back Left Motor', self.motors[2])
-             #self.debugMotor('Back Right Motor', self.motors[3])
-        #except IndexError:
-         #   pass
+        try:
+            self.debugMotor('Back Left Motor', self.motors[2])
+            self.debugMotor('Back Right Motor', self.motors[3])
+        except IndexError:
+            pass
 
 
     def initDefaultCommand(self):
@@ -95,8 +98,6 @@ class BaseDrive(DebuggableSubsystem):
         '''
         if [x, y, rotate] == self.lastInputs:
             return
-
-        print(y)
 
         self.lastInputs = [x, y, rotate]
 
@@ -132,7 +133,6 @@ class BaseDrive(DebuggableSubsystem):
 
         else:
             for motor, speed in zip(self.activeMotors, speeds):
-                print(speed)
                 motor.set(ControlMode.PercentOutput, speed * self.maxPercentVBus)
 
 
@@ -145,9 +145,10 @@ class BaseDrive(DebuggableSubsystem):
         if not self.useEncoders:
             raise RuntimeError('Cannot set position. Encoders are disabled.')
 
-        self._setMode(TalonSRX.ControlMode.MotionMagic)
         for motor, position in zip(self.activeMotors, positions):
-            motor.set(position)
+            motor.configMotionCruiseVelocity(self.speedLimit)
+            motor.configMotionAcceleration(self.speedLimit)
+            motor.set(ControlMode.MotionMagic, position)
 
 
     def atPosition(self, tolerance=10):
@@ -164,12 +165,9 @@ class BaseDrive(DebuggableSubsystem):
 
 
     def stop(self):
-        '''A nice shortcut for calling move with all zeroes.'''
-
-        if self.useEncoders:
-            self._setMode(ControlMode.Velocity)
-
-        self.move(0, 0, 0)
+        '''Disable all motors until set() is called again.'''
+        for motor in self.activeMotors:
+            motor.stopMotor()
 
 
     def resetGyro(self):
@@ -221,12 +219,7 @@ class BaseDrive(DebuggableSubsystem):
         the motors will be set to speed mode. Disabling encoders should not be
         done lightly, as many commands rely on encoder information.
         '''
-
         self.useEncoders = useEncoders
-        if useEncoders:
-            self._setMode(ControlMode.Velocity)
-        else:
-            self._setMode(ControlMode.PercentOutput)
 
 
     def setSpeedLimit(self, speed):
@@ -243,33 +236,7 @@ class BaseDrive(DebuggableSubsystem):
             self.maxSpeed = speed
 
         '''If we can't use encoders, attempt to approximate that speed.'''
-        print(self.maxSpeed)
         self.maxPercentVBus = speed / self.maxSpeed
-
-        if self.useEncoders:
-            self._setMode(ControlMode.Velocity)
-        else:
-            self._setMode(ControlMode.PercentOutput)
-
-
-    def _setMode(self, mode):
-        '''
-        Sets the control mode of active motors, with some intelligent changes
-        depending on the mode.
-        '''
-
-        for motor in self.activeMotors:
-
-            if mode == ControlMode.MotionMagic:
-                motor.setProfileSlot(1, 0)
-                motor.configMotionCruiseVelocity(self.speedLimit)
-                motor.configMotionAcceleration(self.speedLimit)
-                motor.set(mode, motor.getSelctedSensorPosition(0))
-            elif mode == ControlMode.Velocity:
-                motor.selectProfileSlot(0, 0)
-                motor.setIntegralAccumulator(0, 0, 0)
-                motor.set(mode, 0)
-
 
 
     def _publishPID(self, table, profile):
@@ -282,7 +249,7 @@ class BaseDrive(DebuggableSubsystem):
 
         talon = self.activeMotors[0]
 
-       # talon.selectProfileSlot(profile, 0)
+        #talon.selectProfileSlot(profile, 0)
         #table.putNumber('P', talon.getP())
         #table.putNumber('I', talon.getI())
         #table.putNumber('D', talon.getD())
