@@ -192,7 +192,7 @@ def generateCommand():
     # Put spaces before capital letters
     # https://stackoverflow.com/a/199215
     description = re.sub('Command(Group)?$', '', command)
-    description = re.sub(r'\B[A-Z]', r'\0', description)
+    description = re.sub(r'\B([A-Z])', r' \1', description)
 
     path = 'commands/%s.py' % command.lower()
     if len(requirements) > 0:
@@ -233,10 +233,13 @@ def generateCommand():
         content += 'self.addParallel()'
 
     else:
-        for subsystem in requirements:
-            content += '        self.requires(subsystems.%s)\n' % subsystem
+        if len(requirements) > 0:
+            for subsystem in requirements:
+                content += '        self.requires(subsystems.%s)\n' % subsystem
 
-        content += '\n\n    def initialize(self):\n        pass\n\n\n'
+            content += '\n'
+
+        content += '\n    def initialize(self):\n        pass\n\n\n'
 
         if inherits != 'InstantCommand':
             content += '    def execute(self):\n        pass\n\n\n'
