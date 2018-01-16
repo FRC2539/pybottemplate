@@ -10,8 +10,8 @@ class ControllerDebugCommand(Command):
         self.setRunWhenDisabled(True)
         self.joystick = Joystick(port)
 
-        self.numOfAxes = len(self.joystick.ds.joystickAxes)
-        self.numOfButtons = len(self.joystick.ds.joystickButtons)
+        self.numOfAxes = self.joystick.ds.joystickAxes[port].count
+        self.numOfButtons = self.joystick.ds.joystickButtons[port].count
 
 
     def execute(self):

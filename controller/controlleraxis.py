@@ -6,8 +6,13 @@ class ControllerAxis:
         An axis is considered inverted if pushing up gives a negative result.
         In that case, we multiply its value by -1 before returning it.
         '''
+        self.controller = controller
+        self.id = id
+        self.isInverted = isInverted
 
-        if isInverted:
-            self.get = lambda: -1 * controller.getRawAxis(id)
-        else:
-            self.get = lambda: controller.getRawAxis(id)
+    def get(self):
+        value = self.controller.getRawAxis(self.id)
+        if self.isInverted:
+            value *= -1
+
+        return value
