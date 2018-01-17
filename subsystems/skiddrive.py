@@ -18,7 +18,7 @@ class SkidDrive(BaseDrive):
             self.motors[3].set(ControlMode.Follower, ports.drivetrain.frontRightMotorID)
 
         '''Invert the left side.'''
-        self.motors[RobotDrive.MotorType.kFrontLeft].setInverted(True)
+        self.motors[RobotDrive.MotorType.kFrontLeft].setSensorPhase(True)
 
 
     def _calculateSpeeds(self, x, y, rotate):
