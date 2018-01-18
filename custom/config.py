@@ -27,10 +27,7 @@ class Config:
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
-        try:
-            value = Config._nt.getValue(self.key, None)
-        except KeyError:
-            value = None
+        value = Config._nt.getValue(self.key, None)
 
         if value is None and default is None:
             Config._values[self.key] = None
@@ -47,10 +44,9 @@ class Config:
 
     def getValue(self):
         if Config._values[self.key] is None:
-            try:
-                value = Config._nt.getValue(self.key)
-            except KeyError:
-                return None
+            value = Config._nt.getValue(self.key, None)
+            if value is None:
+                return value
 
             Config._values[self.key] = Config._nt.getAutoUpdateValue(
                 self.key,
