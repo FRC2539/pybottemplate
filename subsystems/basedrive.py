@@ -268,9 +268,15 @@ class BaseDrive(DebuggableSubsystem):
                 'I': 'config_kI',
                 'D': 'config_kD',
                 'F': 'config_kF',
-                'IZone': 'setIZone',
-                'RampRate': 'configClosedloopRamp'
+                'IZone': 'configMaxIntegralAccumulator',
+                'RampRate': ''
             }
+
+            if key == 'RampRate':
+                for motor in self.activeMotors:
+                    motor.configClosedLoopRamp(value, 0)
+
+                return
 
             for motor in self.activeMotors:
                 getattr(motor, funcs[key])(profile, value, 0)
