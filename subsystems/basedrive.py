@@ -3,7 +3,7 @@ from .debuggablesubsystem import DebuggableSubsystem
 import math
 
 from networktables import NetworkTables
-from ctre import ControlMode, NeutralMode, WPI_TalonSRX
+from ctre import ControlMode, NeutralMode, WPI_TalonSRX, FeedbackDevice
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
 
 from custom.config import Config
@@ -41,6 +41,7 @@ class BaseDrive(DebuggableSubsystem):
         for motor in self.motors:
             motor.setNeutralMode(NeutralMode.Coast)
             motor.setSafetyEnabled(False)
+            motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0)
 
         '''
         Subclasses should configure motors correctly and populate activeMotors.
@@ -146,8 +147,8 @@ class BaseDrive(DebuggableSubsystem):
             raise RuntimeError('Cannot set position. Encoders are disabled.')
 
         for motor, position in zip(self.activeMotors, positions):
-            motor.configMotionCruiseVelocity(self.speedLimit)
-            motor.configMotionAcceleration(self.speedLimit)
+            motor.configMotionCruiseVelocity(self.speedLimit, 0)
+            motor.configMotionAcceleration(self.speedLimit, 0)
             motor.set(ControlMode.MotionMagic, position)
 
 
@@ -157,7 +158,7 @@ class BaseDrive(DebuggableSubsystem):
         '''
         error = 0
         for motor in self.activeMotors:
-            error += abs(motor.getSetpoint() - motor.getSelectedSensorPosition())
+            error += abs(motor.getClosedLoopTarget(0) - motor.getSelectedSensorPosition(0))
 
         error /= len(self.activeMotors)
 
@@ -197,20 +198,12 @@ class BaseDrive(DebuggableSubsystem):
 
     def getSpeeds(self):
         '''Returns the speed of each active motors.'''
-
-        if not self.useEncoders:
-            raise RuntimeError('Cannot read speed. Encoders are disabled.')
-
-        return [x.getSelectedSensorVelocity() for x in self.activeMotors]
+        return [x.getSelectedSensorVelocity(0) for x in self.activeMotors]
 
 
     def getPositions(self):
         '''Returns the position of each active motor.'''
-
-        if not self.useEncoders:
-            raise RuntimeError('Cannot read position. Encoders are disabled.')
-
-        return [x.getSelectedSensorPosition() for x in self.activeMotors]
+        return [x.getSelectedSensorPosition(0) for x in self.activeMotors]
 
 
     def setUseEncoders(self, useEncoders=True):
@@ -257,7 +250,7 @@ class BaseDrive(DebuggableSubsystem):
         #table.putNumber('IZone', talon.getIZone())
         #table.putNumber('RampRate', talon.getCloseLoopRampRate())
 
-        table.addTableListener(self._PIDListener(profile))
+        table.addTableListener(self._PIDListener(profile), localNotify=True)
 
 
     def _PIDListener(self, profile):
@@ -276,12 +269,11 @@ class BaseDrive(DebuggableSubsystem):
                 'D': 'config_kD',
                 'F': 'config_kF',
                 'IZone': 'setIZone',
-                'RampRate': 'setCloseLoopRampRate'
+                'RampRate': 'configClosedloopRamp'
             }
 
             for motor in self.activeMotors:
-                motor.setProfileSlot(profile)
-                getattr(motor, funcs[key])(value)
+                getattr(motor, funcs[key])(profile, value, 0)
 
         return updatePID
 

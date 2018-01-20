@@ -14,17 +14,15 @@ class ConfigurePIDCommandGroup(CommandGroup):
     def __init__(self):
         super().__init__('Configure PID')
 
-        setMaxSpeed = CalculateMaxSpeedCommand()
-
         self.addSequential(SetUseEncodersCommand(False))
         self.addSequential(MoveYCommand(1))
         self.addSequential(WaitCommand(2))
-        self.addSequential(setMaxSpeed)
+        self.addSequential(CalculateMaxSpeedCommand())
         self.addSequential(MoveYCommand(0))
         self.addSequential(WaitCommand(2))
         self.addSequential(MoveYCommand(-1))
         self.addSequential(WaitCommand(2))
-        self.addSequential(setMaxSpeed)
+        self.addSequential(CalculateMaxSpeedCommand())
         self.addSequential(SetUseEncodersCommand(True))
         self.addSequential(SetSpeedCommand(Config('DriveTrain/normalSpeed')))
         self.addSequential(MoveYCommand(1))

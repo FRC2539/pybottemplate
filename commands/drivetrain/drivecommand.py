@@ -16,7 +16,10 @@ class DriveCommand(Command):
 
 
     def initialize(self):
-        subsystems.drivetrain.setSpeedLimit(self.speedLimit)
+        try:
+            subsystems.drivetrain.setSpeedLimit(self.speedLimit)
+        except ZeroDivisionError:
+            print('Could not set speed to %f' % self.speedLimit)
 
 
     def execute(self):

@@ -6,12 +6,12 @@ import subsystems
 
 class CalculateMaxSpeedCommand(InstantCommand):
 
+    measuredSpeeds = []
+
     def __init__(self):
         super().__init__('Calculate Max Speed')
 
         self.requires(subsystems.drivetrain)
-        self.measuredSpeeds = []
-
         self.table = NetworkTables.getTable('DriveTrain')
 
 

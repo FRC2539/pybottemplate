@@ -7,6 +7,7 @@ from wpilib.robotbase import RobotBase
 from custom import driverhud
 import controller.layout
 import subsystems
+import shutil, sys
 
 
 class KryptonBot(CommandBasedRobot):
@@ -37,4 +38,8 @@ class KryptonBot(CommandBasedRobot):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == 'deploy':
+        shutil.rmtree('opkg_cache', ignore_errors=True)
+        shutil.rmtree('pip_cache', ignore_errors=True)
+
     run(KryptonBot)
