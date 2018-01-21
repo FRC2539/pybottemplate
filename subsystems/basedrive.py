@@ -242,13 +242,9 @@ class BaseDrive(DebuggableSubsystem):
 
         talon = self.activeMotors[0]
 
-        #talon.selectProfileSlot(profile, 0)
-        #table.putNumber('P', talon.getP())
-        #table.putNumber('I', talon.getI())
-        #table.putNumber('D', talon.getD())
-        #table.putNumber('F', talon.getF())
-        #table.putNumber('IZone', talon.getIZone())
-        #table.putNumber('RampRate', talon.getCloseLoopRampRate())
+        # TODO: If CTRE ever gives us back the ability to query PID values, send
+        # them to NetworkTables here. In the meantime, we just persist the last
+        # values that were set via NetworkTables
 
         table.addTableListener(self._PIDListener(profile), localNotify=True)
 
@@ -263,20 +259,21 @@ class BaseDrive(DebuggableSubsystem):
             to access the methods of the motor by name.
             '''
 
-            funcs = {
-                'P': 'config_kP',
-                'I': 'config_kI',
-                'D': 'config_kD',
-                'F': 'config_kF',
-                'IZone': 'configMaxIntegralAccumulator',
-                'RampRate': ''
-            }
+            table.setPersistent(key)
 
             if key == 'RampRate':
                 for motor in self.activeMotors:
                     motor.configClosedLoopRamp(value, 0)
 
                 return
+
+            funcs = {
+                'P': 'config_kP',
+                'I': 'config_kI',
+                'D': 'config_kD',
+                'F': 'config_kF',
+                'IZone': 'config_IntegralZone'
+            }
 
             for motor in self.activeMotors:
                 getattr(motor, funcs[key])(profile, value, 0)
