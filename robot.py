@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from commandbased import CommandBasedRobot
+from custom.commandbasedrobot import CommandBasedRobot
 from wpilib._impl.main import run
 from wpilib.robotbase import RobotBase
 
@@ -28,8 +28,9 @@ class KryptonBot(CommandBasedRobot):
         '''This function is called each time autonomous mode starts.'''
 
         # Schedule the autonomous command
-        driverhud.getAutonomousProgram().start()
-        driverhud.showInfo("Starting %s" % driverhud.getAutonomousProgram())
+        auton = driverhud.getAutonomousProgram()
+        auton.start()
+        driverhud.showInfo("Starting %s" % auton)
 
 
     def handleCrash(self, error):
