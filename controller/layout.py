@@ -2,6 +2,7 @@ from .logitechdualshock import LogitechDualShock
 from . import logicalaxes
 
 from custom.config import Config
+from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 
 from commands.drivetrain.drivecommand import DriveCommand
 from commands.resetcommand import ResetCommand
@@ -23,8 +24,9 @@ def init():
     logicalaxes.driveY = mainController.LeftY
     logicalaxes.driveRotate = mainController.RightX
 
-    mainController.LeftBumper.whileHeld(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    mainController.B.whenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.Back.whenPressed(ResetCommand())
+    #mainController.Y.whenPressed(ConfigurePIDCommandGroup())
 
 
     backupController = LogitechDualShock(1)
