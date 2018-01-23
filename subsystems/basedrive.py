@@ -146,6 +146,7 @@ class BaseDrive(DebuggableSubsystem):
         if not self.useEncoders:
             raise RuntimeError('Cannot set position. Encoders are disabled.')
 
+        self.stop()
         for motor, position in zip(self.activeMotors, positions):
             motor.configMotionCruiseVelocity(self.speedLimit, 0)
             motor.configMotionAcceleration(self.speedLimit, 0)
