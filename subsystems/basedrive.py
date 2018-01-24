@@ -148,8 +148,8 @@ class BaseDrive(DebuggableSubsystem):
 
         self.stop()
         for motor, position in zip(self.activeMotors, positions):
-            motor.configMotionCruiseVelocity(self.speedLimit, 0)
-            motor.configMotionAcceleration(self.speedLimit, 0)
+            motor.configMotionCruiseVelocity(+self.speedLimit, 0)
+            motor.configMotionAcceleration(+self.speedLimit, 0)
             motor.set(ControlMode.MotionMagic, position)
 
 

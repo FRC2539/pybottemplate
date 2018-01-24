@@ -1,10 +1,10 @@
 from custom.config import Config
 
 defaults = {
-    '/DriveTrain/maxSpeed': 950,
-    '/DriveTrain/normalSpeed': 600,
-    '/DriveTrain/preciseSpeed': 150,
-    '/DriveTrain/ticksPerInch': 750
+    'DriveTrain/maxSpeed': 950,
+    'DriveTrain/normalSpeed': 600,
+    'DriveTrain/preciseSpeed': 150,
+    'DriveTrain/ticksPerInch': 750
 }
 
 def fakeConfig(self):
@@ -17,3 +17,4 @@ def fakeConfig(self):
 
 Config._getValue = Config.getValue
 Config.getValue = fakeConfig
+Config.__pos__ = fakeConfig

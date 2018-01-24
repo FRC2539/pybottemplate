@@ -33,7 +33,6 @@ class TurnCommand(MoveCommand):
         '''
 
         inchesPerDegree = math.pi * Config('DriveTrain/width') / 360
-        print(inchesPerDegree)
         totalDistanceInInches = self.distance * inchesPerDegree
 
         return totalDistanceInInches * Config('DriveTrain/ticksPerInch')

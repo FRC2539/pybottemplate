@@ -6,6 +6,8 @@ information from the dashboard and provide it to the program.
 from wpilib.sendablechooser import SendableChooser
 from wpilib.smartdashboard import SmartDashboard
 from wpilib.command import Scheduler
+from wpilib.driverstation import DriverStation
+from networktables import NetworkTables
 
 autonChooser = None
 
@@ -52,6 +54,7 @@ def getAutonomousProgram():
 
     return autonChooser.getSelected()
 
+
 def showCommand(cmd):
     '''Display the given command on the dashboard.'''
 
@@ -74,3 +77,19 @@ def showAlert(msg, type='Alerts'):
 
 def showInfo(msg):
     showAlert(msg, 'Info')
+
+
+def showField():
+    field = NetworkTables.getTable('Field');
+    ds = DriverStation.getInstance()
+
+    color = ds.getAlliance()
+
+    if color == ds.Alliance.Red:
+        field.putValue('color', 'red')
+    elif color == ds.Alliance.Blue:
+        field.putValue('color', 'blue')
+
+    layout = ds.getGameSpecificMessage()
+    if layout:
+        field.putValue('layout', layout)
