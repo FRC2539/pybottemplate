@@ -17,6 +17,7 @@ class DriveCommand(Command):
 
     def initialize(self):
         subsystems.drivetrain.stop()
+        subsystems.drivetrain.setProfile(0)
         try:
             subsystems.drivetrain.setSpeedLimit(self.speedLimit)
         except ZeroDivisionError:

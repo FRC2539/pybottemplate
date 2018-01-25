@@ -72,14 +72,14 @@ class Config:
     def __float__(self):
         try:
             return float(self.getValue())
-        except TypeError:
+        except (TypeError, ValueError):
             return 0.0
 
 
     def __int__(self):
         try:
             return int(self.getValue())
-        except TypeError:
+        except (TypeError, ValueError):
             return 0
 
 
@@ -89,7 +89,7 @@ class Config:
         try:
             float(self.getValue())
             return self.key
-        except TypeError:
+        except (TypeError, ValueError):
             return str(self.getValue())
 
 

@@ -148,8 +148,9 @@ class BaseDrive(DebuggableSubsystem):
 
         self.stop()
         for motor, position in zip(self.activeMotors, positions):
-            motor.configMotionCruiseVelocity(+self.speedLimit, 0)
-            motor.configMotionAcceleration(+self.speedLimit, 0)
+            motor.selectProfileSlot(1, 0)
+            motor.configMotionCruiseVelocity(int(self.speedLimit), 0)
+            motor.configMotionAcceleration(int(self.speedLimit), 0)
             motor.set(ControlMode.MotionMagic, position)
 
 
@@ -170,6 +171,11 @@ class BaseDrive(DebuggableSubsystem):
         '''Disable all motors until set() is called again.'''
         for motor in self.activeMotors:
             motor.stopMotor()
+
+
+    def setProfile(self, profile):
+        for motor in self.activeMotors:
+            motor.selectProfileSlot(profile, 0)
 
 
     def resetGyro(self):
@@ -247,12 +253,6 @@ class BaseDrive(DebuggableSubsystem):
         # them to NetworkTables here. In the meantime, we just persist the last
         # values that were set via NetworkTables
 
-        table.addTableListener(self._PIDListener(profile), localNotify=True)
-
-
-    def _PIDListener(self, profile):
-        '''Provides as easy way to make sure we update the right profile.'''
-
         def updatePID(table, key, value, isNew):
             '''
             Loops over all active motors and updates the appropriate setting. To
@@ -268,8 +268,13 @@ class BaseDrive(DebuggableSubsystem):
 
                 return
 
+            if key == 'P':
+                for motor in self.activeMotors:
+                    motor.config_kP(1, value, 0)
+
+                return
+
             funcs = {
-                'P': 'config_kP',
                 'I': 'config_kI',
                 'D': 'config_kD',
                 'F': 'config_kF',
@@ -277,9 +282,10 @@ class BaseDrive(DebuggableSubsystem):
             }
 
             for motor in self.activeMotors:
-                getattr(motor, funcs[key])(profile, value, 0)
+                getattr(motor, funcs[key])(0, value, 0)
+                getattr(motor, funcs[key])(1, value, 0)
 
-        return updatePID
+        table.addTableListener(updatePID, localNotify=True)
 
 
     def _configureMotors(self):
