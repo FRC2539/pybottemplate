@@ -154,17 +154,20 @@ class BaseDrive(DebuggableSubsystem):
             motor.set(ControlMode.MotionMagic, position)
 
 
-    def atPosition(self, tolerance=10):
-        '''
-        Check setpoint error to see if it is below the given tolerance.
-        '''
+    def averageError(self):
+        '''Find the average distance between setpoint and current position.'''
         error = 0
         for motor in self.activeMotors:
             error += abs(motor.getClosedLoopTarget(0) - motor.getSelectedSensorPosition(0))
 
-        error /= len(self.activeMotors)
+        return error / len(self.activeMotors)
 
-        return error <= tolerance
+
+    def atPosition(self, tolerance=10):
+        '''
+        Check setpoint error to see if it is below the given tolerance.
+        '''
+        return self.averageError() <= tolerance
 
 
     def stop(self):
@@ -174,8 +177,21 @@ class BaseDrive(DebuggableSubsystem):
 
 
     def setProfile(self, profile):
+        '''Select which PID profile to use.'''
         for motor in self.activeMotors:
             motor.selectProfileSlot(profile, 0)
+
+
+    def resetPID(self):
+        '''Set all PID values to 0 for profiles 0 and 1.'''
+        for motor in self.activeMotors:
+            motor.configClosedLoopRamp(0, 0)
+            for profile in range(2):
+                motor.config_kP(profile, 0, 0)
+                motor.config_kI(profile, 0, 0)
+                motor.config_kD(profile, 0, 0)
+                motor.config_kF(profile, 0, 0)
+                motor.config_IntegralZone(profile, 0, 0)
 
 
     def resetGyro(self):

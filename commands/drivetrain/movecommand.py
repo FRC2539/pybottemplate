@@ -32,7 +32,7 @@ class MoveCommand(Command):
 
 
     def isFinished(self):
-        if self.isTimedOut() and subsystems.drivetrain.atPosition(10):
+        if self.isTimedOut() and subsystems.drivetrain.atPosition():
             self.onTarget += 1
         else:
             self.onTarget = 0
