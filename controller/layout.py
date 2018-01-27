@@ -8,6 +8,8 @@ from commands.resetcommand import ResetCommand
 from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 from commands.intake.intakecommand import IntakeCommand
 from commands.intake.outtakecommand import OuttakeCommand
+from commands.climber.climbcommand import ClimbCommand
+
 def init():
     '''
     Declare all controllers, assign axes to logical axes, and trigger
@@ -25,11 +27,19 @@ def init():
     logicalaxes.driveY = mainController.LeftY
     logicalaxes.driveRotate = mainController.RightX
 
-    mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.Back.whenPressed(ResetCommand())
+
+    mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.B.toggleWhenPressed(IntakeCommand())
     mainController.Y.toggleWhenPressed(OuttakeCommand())
-    #mainController.Y.whenPressed(ConfigurePIDCommandGroup())
+    mainController.LeftTrigger.whileHeld(ClimbCommand())
 
 
     backupController = LogitechDualShock(1)
+
+    backupController.Back.whenPressed(ResetCommand())
+
+    backupController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    backupController.B.toggleWhenPressed(IntakeCommand())
+    backupController.Y.toggleWhenPressed(OuttakeCommand())
+    backupController.LeftTrigger.whileHeld(ClimbCommand())

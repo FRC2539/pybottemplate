@@ -9,17 +9,19 @@ from wpilib.robotbase import RobotBase
 from .drivetrain import DriveTrain
 from .monitor import Monitor
 from .intake import Intake
+from .elevator import Elevator
 
 drivetrain = None
 monitor = None
 intake = None
+elevator = None
 
 def init():
     '''
     Creates all subsystems. You must run this before any commands are
     instantiated. Do not run it more than once.
     '''
-    global drivetrain, monitor, intake
+    global drivetrain, monitor, intake, elevator
 
     '''
     The default tests that are run before deploy call startCompetition multiple
@@ -32,3 +34,4 @@ def init():
     drivetrain = DriveTrain()
     monitor = Monitor()
     intake = Intake()
+    elevator = Elevator()
