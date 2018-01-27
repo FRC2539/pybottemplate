@@ -6,7 +6,8 @@ from custom.config import Config
 from commands.drivetrain.drivecommand import DriveCommand
 from commands.resetcommand import ResetCommand
 from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
-
+from commands.intake.intakecommand import IntakeCommand
+from commands.intake.outtakecommand import OuttakeCommand
 def init():
     '''
     Declare all controllers, assign axes to logical axes, and trigger
@@ -24,8 +25,10 @@ def init():
     logicalaxes.driveY = mainController.LeftY
     logicalaxes.driveRotate = mainController.RightX
 
-    mainController.B.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.Back.whenPressed(ResetCommand())
+    mainController.B.toggleWhenPressed(IntakeCommand())
+    mainController.Y.toggleWhenPressed(OuttakeCommand())
     #mainController.Y.whenPressed(ConfigurePIDCommandGroup())
 
 

@@ -78,7 +78,6 @@ class DefaultCommand(Command):
 
     def end(self):
         pass
-
 '''.lstrip().format(subsystem=subsystem, module=module))
 
 

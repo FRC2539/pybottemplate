@@ -9,6 +9,7 @@ __pycache__
 tests
 .deploy_cfg
 *_cache
+.installer_config
 
 # virtualenv
 .venv

@@ -32,9 +32,9 @@ class AutonomousCommandGroup(CommandGroup):
             @fc.IF(getSwitch)
             def cubeOnSwitch(self):
                 self.addSequential(MoveCommand(20))
-                self.addSequential(PivotCommand(45))
+                self.addSequential(PivotCommand(60))
                 self.addSequential(MoveCommand(30))
-                self.addSequential(PivotCommand(-45))
+                self.addSequential(PivotCommand(-60))
                 self.addSequential(SetSpeedCommand(1500))
                 self.addSequential(RunIntoWallCommand())
                 self.addSequential(AlertCommand('We scored!', 'Info'))

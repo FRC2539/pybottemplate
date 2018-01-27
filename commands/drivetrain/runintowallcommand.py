@@ -17,7 +17,10 @@ class RunIntoWallCommand(Command):
 
 
     def isFinished(self):
-        return abs(subsystems.drivetrain.getAcceleration()) > 0.5
+        if self.isTimedOut():
+            return True
+
+        return abs(subsystems.drivetrain.getAcceleration()) > 1
 
 
     def end(self):
