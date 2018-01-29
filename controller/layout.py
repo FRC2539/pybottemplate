@@ -8,6 +8,7 @@ from commands.resetcommand import ResetCommand
 from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 from commands.intake.intakecommand import IntakeCommand
 from commands.intake.outtakecommand import OuttakeCommand
+from.commands.elevator.elevatecommand import ElevateCommand
 from commands.climber.climbcommand import ClimbCommand
 
 def init():
@@ -32,6 +33,7 @@ def init():
     mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.B.toggleWhenPressed(IntakeCommand())
     mainController.Y.toggleWhenPressed(OuttakeCommand())
+    mainController.RightTrigger.whileHeld(ElevateCommand())
     mainController.LeftTrigger.whileHeld(ClimbCommand())
 
 
@@ -42,4 +44,5 @@ def init():
     backupController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     backupController.B.toggleWhenPressed(IntakeCommand())
     backupController.Y.toggleWhenPressed(OuttakeCommand())
+    backupController.RightTrigger.whileHeld(ElevateCommand())
     backupController.LeftTrigger.whileHeld(ClimbCommand())
