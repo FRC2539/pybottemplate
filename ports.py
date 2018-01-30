@@ -28,5 +28,5 @@ elevator.motorID = 7
 
 climber = PortsList()
 
-climber.climberMotorID = 8
+climber.hookMotorID = 8
 climber.winchMotorID = 9

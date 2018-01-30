@@ -3,7 +3,7 @@ from wpilib.command import Command
 import subsystems
 
 class DefaultCommand(Command):
-    '''Describe what this command does.'''
+    '''Stops the conveyors and waits.'''
 
     def __init__(self):
         super().__init__('Default for Intake')

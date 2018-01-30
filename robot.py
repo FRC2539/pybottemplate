@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from commandbased import CommandBasedRobot
+from custom.commandbasedrobot import CommandBasedRobot
 from wpilib._impl.main import run
 from wpilib.robotbase import RobotBase
 

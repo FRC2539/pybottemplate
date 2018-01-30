@@ -4,7 +4,7 @@ import ports
 from wpilib.digitalinput import DigitalInput
 
 class Intake(Subsystem):
-    '''Describe what this subsystem does.'''
+    '''A set of parallel conveyors that will collect and eject power cubes.'''
 
     def __init__(self):
         super().__init__('Intake')
@@ -15,22 +15,30 @@ class Intake(Subsystem):
         self.rightMotor.setInverted(True)
         self.lightSensor = DigitalInput(ports.intake.lightSensorID)
 
+
     def initDefaultCommand(self):
         from commands.intake.defaultcommand import DefaultCommand
 
         self.setDefaultCommand(DefaultCommand())
 
+
+    def set(self, speed):
+        '''Set motors to the given speed'''
+        self.leftMotor.set(ControlMode.PercentOutput, speed)
+        self.rightMotor.set(ControlMode.PercentOutput, speed)
+
+
     def intake(self):
-        self.leftMotor.set(ControlMode.PercentOutput, 1)
-        self.rightMotor.set(ControlMode.PercentOutput, 1)
+        self.set(1)
+
 
     def outtake(self):
-        self.leftMotor.set(ControlMode.PercentOutput, -1)
-        self.rightMotor.set(ControlMode.PercentOutput, -1)
+        self.set(-1)
+
 
     def stopTake(self):
-        self.leftMotor.set(ControlMode.PercentOutput, 0)
-        self.rightMotor.set(ControlMode.PercentOutput, 0)
+        self.set(0)
+
 
     def isCubeInIntake(self):
         return self.lightSensor.get()

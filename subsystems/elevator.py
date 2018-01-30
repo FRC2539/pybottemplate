@@ -2,6 +2,7 @@ from wpilib.command.subsystem import Subsystem
 from ctre import WPI_TalonSRX, ControlMode
 import ports
 from custom.config import Config
+import threading
 
 class Elevator(Subsystem):
     '''Describe what this subsystem does.'''
@@ -13,13 +14,16 @@ class Elevator(Subsystem):
         self.motor.setSafetyEnabled(False)
 
         self.floors = [
-            Config("Elevator/ground"),
-            Config("Elevator/exchange"),
-            Config("Elevator/portal"),
-            Config("Elevator/switch"),
-            Config("Elevator/scale"),
-            Config("Elevator/hang")
+            Config('Elevator/ground'),
+            Config('Elevator/exchange'),
+            Config('Elevator/portal'),
+            Config('Elevator/switch'),
+            Config('Elevator/scale'),
+            Config('Elevator/hang')
         ]
+
+        self.level = 0
+        self.mutex = threading.RLock()
 
 
     def initDefaultCommand(self):
@@ -27,11 +31,46 @@ class Elevator(Subsystem):
 
         self.setDefaultCommand(DefaultCommand())
 
+
+    def set(self, speed):
+        self.motor.set(ControlMode.PercentOutput, speed)
+
+
     def up(self):
-        self.motor.set(ControlMode.PercentOutput, 1)
+        self.set(1)
+
 
     def down(self):
-        self.motor.set(ControlMode.PercentOutput, -1)
+        self.set(-1)
+
 
     def stop(self):
-        self.motor.set(ControlMode.PercentOutput, 0)
+        self.set(0)
+
+
+    def goTo(self, position):
+        self.motor.set(ControlMode.MotionMagic, int(position))
+
+
+    def changeLevel(self, amount=1):
+        with self.mutex:
+            self.level += amount
+            if self.level < 0:
+                self.level = 0
+
+            if self.level >= len(self.floors):
+                self.level = len(self.floors) - 1
+
+        self.goTo(self.floors[self.level])
+
+
+    def setLevel(self, floor):
+        key = 'Elevator/%s' % floor
+
+        with self.mutex:
+            for level, floor in enumerate(self.floors):
+                if (str(floor) == key):
+                    self.level = level
+                    break
+
+        self.goTo(self.floors[self.level])

@@ -8,7 +8,7 @@ from commands.resetcommand import ResetCommand
 from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 from commands.intake.intakecommand import IntakeCommand
 from commands.intake.outtakecommand import OuttakeCommand
-from.commands.elevator.elevatecommand import ElevateCommand
+from commands.elevator.elevatecommand import ElevateCommand
 from commands.climber.climbcommand import ClimbCommand
 
 def init():

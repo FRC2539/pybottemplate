@@ -14,7 +14,7 @@ fi
 # Redirect output to stderr.
 exec 1>&2
 
-# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# Cross-platform projects tend to avoid non-ASCII filenames; prevent
 # them from being added to the repository. We exploit the fact that the
 # printable range starts at the space character and ends with tilde.
 if test $(git diff --cached --name-only --diff-filter=A -z $against |
@@ -41,7 +41,7 @@ if [[ ! -d "$newroot/tests" ]]; then
 fi
 # NOTE: In testing this continues using the repo's virtualenv, but it's possible
 # that won't always happen.
-./robot.py test 1> /dev/null 2> "$newroot/test-output.txt"
+./robot.py test &> "$newroot/test-output.txt"
 if [[ $? -ne 0 ]]; then
     cat "$newroot/test-output.txt"
     cd - > /dev/null

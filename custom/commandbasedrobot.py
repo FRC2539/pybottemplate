@@ -15,7 +15,7 @@ class CommandBasedRobot(TimedRobot):
         """Initalizes the scheduler before starting robotInit()"""
 
         self.scheduler = Scheduler.getInstance()
-        super().startCompetition();
+        super().startCompetition()
 
 
     def commandPeriodic(self):

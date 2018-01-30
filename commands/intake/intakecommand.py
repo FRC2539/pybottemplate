@@ -12,5 +12,7 @@ class IntakeCommand(Command):
 
     def initialize(self):
         subsystems.intake.intake()
+
+
     def isFinished(self):
         return subsystems.intake.isCubeInIntake()

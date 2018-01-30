@@ -1,8 +1,6 @@
 from wpilib.command import Command
-from networktables import NetworkTables
 
 import subsystems
-from custom import driverhud
 
 class ClimbCommand(Command):
     '''
@@ -16,14 +14,7 @@ class ClimbCommand(Command):
 
 
     def initialize(self):
-        if not subsystems.climber.atTop():
-            subsystems.climber.start()
-        else:
-            driverhud.showAlert('Already at top')
-
-
-    def isFinished(self):
-        return subsystems.climber.atTop()
+        subsystems.climber.start()
 
 
     def end(self):

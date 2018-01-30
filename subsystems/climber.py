@@ -12,10 +12,9 @@ class Climber(DebuggableSubsystem):
     def __init__(self):
         super().__init__('Climber')
 
-        self.motor = WPI_TalonSRX(ports.climber.motorID)
-        self.motor.enableBrakeMode(True)
+        self.motor = WPI_TalonSRX(ports.climber.hookMotorID)
+        self.motor.setNeutralMode(NeutralMode.Brake)
         self.motor.setSafetyEnabled(False)
-        self.motor.set(WPI_TalonSRX.ControlMode.PercentOutput, 0)
 
 
     def start(self):
@@ -24,7 +23,3 @@ class Climber(DebuggableSubsystem):
 
     def stop(self):
         self.motor.set(0)
-
-
-    def atTop(self):
-        return False

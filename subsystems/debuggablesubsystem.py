@@ -9,8 +9,8 @@ class DebuggableSubsystem(Subsystem):
     '''
 
     def debugSensor(self, label, sensor):
-        LiveWindow.addSensor(self.getName(), label, sensor)
+        sensor.setName(self.getName(), label)
 
 
     def debugMotor(self, label, motor):
-        LiveWindow.addActuator(self.getName(), label, motor)
+        motor.setName(self.getName(), label)

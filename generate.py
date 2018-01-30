@@ -35,10 +35,12 @@ def generateSubsystem():
 
     with open('subsystems/%s.py' % module, 'w') as f:
         f.write('''
-from wpilib.command.subsystem import Subsystem
+from .debuggablesubsystem import DebuggableSubsystem
+
+import ports
 
 
-class {subsystem}(Subsystem):
+class {subsystem}(DebuggableSubsystem):
     \'\'\'Describe what this subsystem does.\'\'\'
 
     def __init__(self):
@@ -115,6 +117,19 @@ class DefaultCommand(Command):
 
     with open('subsystems/__init__.py', 'w') as f:
         f.write(init)
+
+
+    with open('ports.py', 'r') as f:
+        ports = f.read()
+
+    if not module in ports:
+        ports = '''
+%s
+%s = PortsList()
+''' % (ports, module)
+
+    with open('ports.py', 'w') as f:
+        f.write(ports)
 
     print('Generated subsystem %s' % subsystem)
 
