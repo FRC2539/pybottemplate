@@ -60,6 +60,7 @@ class BaseDrive(DebuggableSubsystem):
         self.maxSpeed = Config('DriveTrain/maxSpeed')
         self.speedLimit = Config('DriveTrain/normalSpeed')
         self.deadband = Config('DriveTrain/deadband', 0.05)
+        self.maxPercentVBus = 1
 
         '''Allow changing CAN Talon settings from dashboard'''
         self._publishPID('Speed', 0)

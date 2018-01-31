@@ -20,8 +20,9 @@ class DriveCommand(Command):
         subsystems.drivetrain.setProfile(0)
         try:
             subsystems.drivetrain.setSpeedLimit(self.speedLimit)
-        except ZeroDivisionError:
+        except (ZeroDivisionError, TypeError):
             print('Could not set speed to %f' % self.speedLimit)
+            subsystems.drivetrain.setUseEncoders(False)
 
 
     def execute(self):

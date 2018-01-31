@@ -11,6 +11,7 @@ from .monitor import Monitor
 from .intake import Intake
 from .climber import Climber
 from .elevator import Elevator
+from .climber import Climber
 
 drivetrain = None
 monitor = None
