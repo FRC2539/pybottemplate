@@ -11,12 +11,8 @@ class ElevateCommand(Command):
 
 
     def initialize(self):
-        pass
-
-
-    def execute(self):
-        pass
+        subsystems.elevator.up()
 
 
     def end(self):
-        pass
+        subsystems.elevator.stop()
