@@ -5,11 +5,15 @@ from custom.config import Config
 
 from commands.drivetrain.drivecommand import DriveCommand
 from commands.resetcommand import ResetCommand
-from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 from commands.intake.intakecommand import IntakeCommand
 from commands.intake.outtakecommand import OuttakeCommand
+
 from commands.elevator.elevatecommand import ElevateCommand
+from commands.elevator.deelevatecommand import DeelevateCommand
 from commands.climber.climbcommand import ClimbCommand
+from commands.climber.hookcommand import HookCommand
+from commands.climber.unhookcommand import UnhookCommand
+
 
 def init():
     '''
@@ -31,18 +35,25 @@ def init():
     mainController.Back.whenPressed(ResetCommand())
 
     mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
-    mainController.B.toggleWhenPressed(IntakeCommand())
-    mainController.Y.toggleWhenPressed(OuttakeCommand())
-    mainController.RightTrigger.whileHeld(ElevateCommand())
-    mainController.LeftTrigger.whileHeld(ClimbCommand())
+    mainController.A.toggleWhenPressed(IntakeCommand())
+    mainController.B.toggleWhenPressed(OuttakeCommand())
+    mainController.Y.whileHeld(ClimbCommand())
 
+    mainController.LeftTrigger.whileHeld(DeelevateCommand())
+    mainController.LeftBumper.whileHeld(ElevateCommand())
+    mainController.RightTrigger.whileHeld(HookCommand())
+    mainController.RightBumper.whileHeld(UnhookCommand())
 
     backupController = LogitechDualShock(1)
 
     backupController.Back.whenPressed(ResetCommand())
 
     backupController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
-    backupController.B.toggleWhenPressed(IntakeCommand())
-    backupController.Y.toggleWhenPressed(OuttakeCommand())
-    backupController.RightTrigger.whileHeld(ElevateCommand())
-    backupController.LeftTrigger.whileHeld(ClimbCommand())
+    backupController.A.toggleWhenPressed(IntakeCommand())
+    backupController.B.toggleWhenPressed(OuttakeCommand())
+    backupController.Y.whileHeld(ClimbCommand())
+
+    backupController.LeftTrigger.whileHeld(DeelevateCommand())
+    backupController.LeftBumper.whileHeld(ElevateCommand())
+    backupController.RightTrigger.whileHeld(HookCommand())
+    backupController.RightBumper.whileHeld(UnhookCommand())

@@ -2,18 +2,19 @@ from wpilib.command import Command
 
 import subsystems
 
-class HookCommand(Command):
+class UnhookCommand(Command):
     '''
     Start spinning the winch.
     '''
 
     def __init__(self):
-        super().__init__('Hook')
+        super().__init__('Unhook')
 
         self.requires(subsystems.climber)
 
+
     def initialize(self):
-        subsystems.climber.hookDown()
+        subsystems.climber.hookUp()
 
 
     def end(self):

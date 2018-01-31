@@ -14,8 +14,8 @@ class ClimbCommand(Command):
 
 
     def initialize(self):
-        subsystems.climber.start()
+        subsystems.climber.startWinch()
 
 
     def end(self):
-        subsystems.climber.stop()
+        subsystems.climber.stopWinch()
