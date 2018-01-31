@@ -2,10 +2,10 @@ from wpilib.command import Command
 
 import subsystems
 
-class ElevateCommand(Command):
+class DeelevateCommand(Command):
 
     def __init__(self):
-        super().__init__('Elevate')
+        super().__init__('Deelevate')
 
         self.requires(subsystems.elevator)
 

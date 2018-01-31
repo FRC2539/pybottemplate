@@ -12,14 +12,26 @@ class Climber(DebuggableSubsystem):
     def __init__(self):
         super().__init__('Climber')
 
-        self.motor = WPI_TalonSRX(ports.climber.hookMotorID)
-        self.motor.setNeutralMode(NeutralMode.Brake)
-        self.motor.setSafetyEnabled(False)
+        self.hook = WPI_TalonSRX(ports.climber.hookMotorID)
+        self.hook.setNeutralMode(NeutralMode.Brake)
+        self.hook.setSafetyEnabled(False)
+
+        self.winch = WPI_TalonSRX(ports.climber.winchMotorID)
+        self.winch.setNeutralMode(NeutralMode.Brake)
+        self.winch.setSafetyEnabled(False)
+
+    def startWinch(self):
+        self.winch.set(ControlMode.PercentOutput, 1)
+
+    def stopWinch(self):
+        self.winch.set(ControlMode.PercentOutput, 0)
 
 
-    def start(self):
-        self.motor.set(ControlMode.PercentOutput, 1)
+    def hookUp(self):
+        self.hook.set(ControlMode.PercentOutput, 1)
 
+    def hookDown(self):
+        self.hook.set(ControlMode.PercentOutput, -1)
 
-    def stop(self):
-        self.motor.set(0)
+    def stopHook(self):
+        self.hook.set(ControlMode.PercentOutput, 0)
