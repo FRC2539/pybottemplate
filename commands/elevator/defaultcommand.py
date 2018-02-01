@@ -11,4 +11,4 @@ class DefaultCommand(Command):
 
 
     def initialize(self):
-        subsystems.intake.stop()
+        subsystems.elevator.stop()

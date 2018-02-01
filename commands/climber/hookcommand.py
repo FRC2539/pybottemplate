@@ -17,4 +17,4 @@ class HookCommand(Command):
 
 
     def end(self):
-        subsystems.climber.hookStop()
+        subsystems.climber.stopHook()
