@@ -4,10 +4,7 @@ defaults = {
     'DriveTrain/maxSpeed': 950,
     'DriveTrain/normalSpeed': 600,
     'DriveTrain/preciseSpeed': 150,
-    'DriveTrain/ticksPerInch': 750,
-    'Autonomous/robotLocation': 'C',
-    'Autonomous/switch': 'easy',
-    'Autonomous/scale': 'easy'
+    'DriveTrain/ticksPerInch': 750
 }
 
 def fakeConfig(self):
@@ -21,6 +18,3 @@ def fakeConfig(self):
 Config._getValue = Config.getValue
 Config.getValue = fakeConfig
 Config.__pos__ = fakeConfig
-
-from wpilib.driverstation import DriverStation
-DriverStation.getGameSpecificMessage = lambda x=0: 'LRL'
