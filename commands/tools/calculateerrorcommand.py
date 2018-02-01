@@ -16,6 +16,11 @@ class CalculateErrorCommand(MoveCommand):
         self.table = NetworkTables.getTable('DriveTrain/Speed')
 
 
+    def initialize(self):
+        self.table.putValue('P', 0)
+        super().initialize()
+
+
     def isFinished(self):
         if not self.isTimedOut():
             return False
@@ -23,12 +28,16 @@ class CalculateErrorCommand(MoveCommand):
         speeds = subsystems.drivetrain.getSpeeds()
         for speed in speeds:
             if abs(speed) > 0.01:
+                self.onTarget = 0
                 return False
 
-        return True
+        self.onTarget += 1
+
+        return self.onTarget > 5
 
 
     def end(self):
         self.errors.append(subsystems.drivetrain.averageError())
 
-        self.table.putValue('P', sum(self.errors) / len(self.errors))
+        avgError = sum(self.errors) / len(self.errors)
+        self.table.putValue('P', 415 / avgError)
