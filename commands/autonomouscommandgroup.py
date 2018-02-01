@@ -67,10 +67,6 @@ class AutonomousCommandGroup(CommandGroup):
         def fromRight(self):
             @fc.IF(getSwitch)
             def cubeOnSwitch(self):
-                self.addSequential(MoveCommand(48))
-
-
-                '''
                 self.addSequential(MoveCommand(20))
                 self.addSequential(PivotCommand(90))
                 self.addSequential(MoveCommand(10))
@@ -80,7 +76,6 @@ class AutonomousCommandGroup(CommandGroup):
                 self.addSequential(MoveCommand(5))
                 self.addSequential(SetSpeedCommand(1500))
                 self.addSequential(AlertCommand('We scored!', 'Info'))
-                '''
 
                 #self.addSequential(MoveCommand(20))
                 #self.addSequential(PivotCommand(-60))

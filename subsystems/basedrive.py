@@ -5,6 +5,7 @@ import math
 from networktables import NetworkTables
 from ctre import ControlMode, NeutralMode, WPI_TalonSRX, FeedbackDevice
 from robotpy_ext.common_drivers.navx.ahrs import AHRS
+from wpilib.digitalinput import DigitalInput
 
 from custom.config import Config
 import ports
