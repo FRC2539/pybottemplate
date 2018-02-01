@@ -1,9 +1,8 @@
-from wpilib.command import Command
+from wpilib.command.command import Command
 
 import subsystems
 
 class DefaultCommand(Command):
-    '''Describe what this command does.'''
 
     def __init__(self):
         super().__init__('Default for Elevator')
@@ -12,12 +11,4 @@ class DefaultCommand(Command):
 
 
     def initialize(self):
-        pass
-
-
-    def execute(self):
-        pass
-
-
-    def end(self):
-        pass
+        subsystems.intake.stop()

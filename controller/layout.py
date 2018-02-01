@@ -36,7 +36,7 @@ def init():
 
     mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     mainController.A.toggleWhenPressed(IntakeCommand())
-    mainController.B.toggleWhenPressed(OuttakeCommand())
+    mainController.B.whenPressed(OuttakeCommand())
     mainController.Y.whileHeld(ClimbCommand())
 
     mainController.LeftTrigger.whileHeld(DeelevateCommand())
@@ -50,7 +50,7 @@ def init():
 
     backupController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
     backupController.A.toggleWhenPressed(IntakeCommand())
-    backupController.B.toggleWhenPressed(OuttakeCommand())
+    backupController.B.whenPressed(OuttakeCommand())
     backupController.Y.whileHeld(ClimbCommand())
 
     backupController.LeftTrigger.whileHeld(DeelevateCommand())
