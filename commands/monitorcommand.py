@@ -1,9 +1,9 @@
 from wpilib.command import Command
 
-import subsystems
+import robot
 
 class MonitorCommand(Command):
-    '''Runs continually while the robot is enabled.'''
+    '''Runs continually while the robot is powered on.'''
 
     def __init__(self):
         super().__init__('MonitorCommand')
@@ -11,7 +11,7 @@ class MonitorCommand(Command):
         '''
         Required because this is the default command for the monitor subsystem.
         '''
-        self.requires(subsystems.monitor)
+        self.requires(robot.monitor)
 
         self.setInterruptible(False)
         self.setRunWhenDisabled(True)

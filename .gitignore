@@ -10,6 +10,7 @@ tests
 .deploy_cfg
 *_cache
 .installer_config
+networktables.ini
 
 # virtualenv
 .venv

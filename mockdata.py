@@ -4,7 +4,8 @@ defaults = {
     'DriveTrain/maxSpeed': 950,
     'DriveTrain/normalSpeed': 600,
     'DriveTrain/preciseSpeed': 150,
-    'DriveTrain/ticksPerInch': 750
+    'DriveTrain/ticksPerInch': 750,
+    'DriveTrain/width': 29.5
 }
 
 def fakeConfig(self):

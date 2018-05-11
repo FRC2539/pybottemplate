@@ -52,6 +52,7 @@ class BaseDrive(DebuggableSubsystem):
         '''Initialize the navX MXP'''
         self.navX = AHRS.create_spi()
         self.resetGyro()
+        self.flatAngle = 0
 
         '''A record of the last arguments to move()'''
         self.lastInputs = None
@@ -176,6 +177,8 @@ class BaseDrive(DebuggableSubsystem):
         for motor in self.activeMotors:
             motor.stopMotor()
 
+        self.lastInputs = None
+
 
     def setProfile(self, profile):
         '''Select which PID profile to use.'''
@@ -215,6 +218,28 @@ class BaseDrive(DebuggableSubsystem):
         return (self.navX.getYaw() + self.gyroOffset) % 360
 
 
+    def getAngleTo(self, targetAngle):
+        '''
+        Returns the anglular distance from the given target. Values will be
+        between -180 and 180, inclusive.
+        '''
+        degrees = targetAngle - self.getAngle()
+        while degrees > 180:
+            degrees -= 360
+        while degrees < -180:
+            degrees += 360
+
+        return degrees
+
+
+    def resetTilt(self):
+        self.flatAngle = self.navX.getPitch()
+
+
+    def getTilt(self):
+        return self.navX.getPitch() - self.flatAngle
+
+
     def getAcceleration(self):
         '''Reads acceleration from NavX MXP.'''
         return self.navX.getWorldLinearAccelY()
@@ -228,6 +253,11 @@ class BaseDrive(DebuggableSubsystem):
     def getPositions(self):
         '''Returns the position of each active motor.'''
         return [x.getSelectedSensorPosition(0) for x in self.activeMotors]
+
+
+    def getFrontClearance(self):
+        '''Override this in drivetrain if a distance sensor is attached.'''
+        return 20
 
 
     def setUseEncoders(self, useEncoders=True):
@@ -245,8 +275,8 @@ class BaseDrive(DebuggableSubsystem):
         mode depending on if encoders are enabled.
         '''
 
-        if speed < 0:
-            raise ValueError('DriveTrain speed cannot be less than 0')
+        if speed <= 0:
+            raise ValueError('DriveTrain speed must be greater than 0')
 
         self.speedLimit = speed
         if speed > self.maxSpeed:
@@ -254,6 +284,16 @@ class BaseDrive(DebuggableSubsystem):
 
         '''If we can't use encoders, attempt to approximate that speed.'''
         self.maxPercentVBus = speed / self.maxSpeed
+
+
+    def enableSimpleDriving(self):
+        '''
+        Allow the robot to drive without encoders or any input from Config.
+        '''
+
+        self.speedLimit = 1
+        self.maxSpeed = 1
+        self.setUseEncoders(False)
 
 
     def _publishPID(self, table, profile):

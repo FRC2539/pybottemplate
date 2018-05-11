@@ -2,7 +2,7 @@ from wpilib.command.instantcommand import InstantCommand
 from networktables import NetworkTables
 import math
 
-import subsystems
+import robot
 
 class CalculateMaxSpeedCommand(InstantCommand):
 
@@ -11,12 +11,12 @@ class CalculateMaxSpeedCommand(InstantCommand):
     def __init__(self):
         super().__init__('Calculate Max Speed')
 
-        self.requires(subsystems.drivetrain)
+        self.requires(robot.drivetrain)
         self.table = NetworkTables.getTable('DriveTrain')
 
 
     def initialize(self):
-        for speed in subsystems.drivetrain.getSpeeds():
+        for speed in robot.drivetrain.getSpeeds():
             self.measuredSpeeds.append(abs(speed))
 
         # Select the smallest max speed

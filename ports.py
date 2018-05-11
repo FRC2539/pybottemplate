@@ -15,18 +15,3 @@ drivetrain.frontLeftMotorID = 1
 drivetrain.frontRightMotorID = 3
 drivetrain.backLeftMotorID = 2
 drivetrain.backRightMotorID = 4
-
-intake = PortsList()
-
-intake.leftMotorID = 5
-intake.rightMotorID = 6
-intake.lightSensorID = 0
-
-elevator = PortsList()
-
-elevator.motorID = 7
-
-climber = PortsList()
-
-climber.hookMotorID = 8
-climber.winchMotorID = 9
