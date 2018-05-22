@@ -1,4 +1,5 @@
 from networktables import NetworkTables
+from networktables.entry import NetworkTableEntry
 
 class MissingConfigError(KeyError):
     pass
@@ -31,10 +32,9 @@ class Config:
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
-        try:
-            value = Config._nt.getValue(self.key, None)
-        except AttributeError:
-            value = None
+        value = Config._nt.getValue(self.key, None)
+        if isinstance(value, NetworkTableEntry):
+            value = value.get()
 
         if value is None and default is None:
             Config._values[self.key] = None

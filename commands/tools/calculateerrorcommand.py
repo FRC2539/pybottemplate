@@ -12,7 +12,7 @@ class CalculateErrorCommand(MoveCommand):
         super().__init__(30 * direction, 'Calculate Error')
 
         self.requires(robot.drivetrain)
-        Config('DriveTrain/ticksPerInch', 350)
+        Config('DriveTrain/wheelDiameter', 8)
         self.table = NetworkTables.getTable('DriveTrain/Speed')
 
 

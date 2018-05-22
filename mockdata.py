@@ -4,7 +4,7 @@ defaults = {
     'DriveTrain/maxSpeed': 950,
     'DriveTrain/normalSpeed': 600,
     'DriveTrain/preciseSpeed': 150,
-    'DriveTrain/ticksPerInch': 750,
+    'DriveTrain/wheelDiameter': 6,
     'DriveTrain/width': 29.5
 }
 

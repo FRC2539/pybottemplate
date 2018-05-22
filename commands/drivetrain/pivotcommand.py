@@ -50,4 +50,4 @@ class PivotCommand(MoveCommand):
         inchesPerDegree = math.pi * Config('DriveTrain/width') / 360
         totalDistanceInInches = self.distance * inchesPerDegree
 
-        return totalDistanceInInches * Config('DriveTrain/ticksPerInch') * 2
+        return robot.drivetrain.inchesToTicks(totalDistanceInInches * 2)

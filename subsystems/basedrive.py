@@ -232,6 +232,13 @@ class BaseDrive(DebuggableSubsystem):
         return degrees
 
 
+    def inchesToTicks(self, distance):
+        '''Converts a distance in inches into a number of encoder ticks.'''
+        rotations = distance / (math.pi * Config('DriveTrain/wheelDiameter'))
+
+        return rotations * Config('DriveTrain/ticksPerRotation', 4096)
+
+
     def resetTilt(self):
         self.flatAngle = self.navX.getPitch()
 
@@ -257,7 +264,12 @@ class BaseDrive(DebuggableSubsystem):
 
     def getFrontClearance(self):
         '''Override this in drivetrain if a distance sensor is attached.'''
-        return 20
+        raise NotImplementedError
+
+
+    def getRearClearance(self):
+        '''Override this in drivetrain if a rear distance sensor is attached.'''
+        raise NotImplementedError
 
 
     def setUseEncoders(self, useEncoders=True):
