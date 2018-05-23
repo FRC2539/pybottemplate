@@ -32,9 +32,10 @@ class Config:
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
-        value = Config._nt.getValue(self.key, None)
-        if isinstance(value, NetworkTableEntry):
-            value = value.get()
+        try:
+            value = Config._nt.getValue(self.key, None)
+        except AttributeError:
+            value = None
 
         if value is None and default is None:
             Config._values[self.key] = None
@@ -53,8 +54,6 @@ class Config:
         if Config._values[self.key] is None:
             try:
                 value = Config._nt.getValue(self.key, None)
-                if isinstance(value, NetworkTableEntry):
-                    value = value.get()
             except AttributeError as exc:
                 raise MissingConfigError('No key named %s' % self.key) from exc
 
@@ -71,7 +70,7 @@ class Config:
             return value
 
         else:
-            return Config._values[self.key].get()
+            return Config._values[self.key].value
 
 
     def getKey(self):
