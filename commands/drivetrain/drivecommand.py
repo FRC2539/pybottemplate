@@ -3,6 +3,7 @@ from wpilib.command import Command
 import robot
 from controller import logicalaxes
 from custom.config import Config, MissingConfigError
+from custom import driverhud
 import math
 
 logicalaxes.registerAxis('driveX')
@@ -24,6 +25,7 @@ class DriveCommand(Command):
             robot.drivetrain.setSpeedLimit(self.speedLimit)
         except (ValueError, MissingConfigError):
             print('Could not set speed to %s' % self.speedLimit)
+            driverhud.showAlert('Drive Train is not configured')
             robot.drivetrain.enableSimpleDriving()
 
         self.lastY = None
