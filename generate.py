@@ -76,6 +76,21 @@ class {subsystem}(DebuggableSubsystem):
     with open('ports.py', 'w') as f:
         f.write(ports)
 
+    with open('commands/resetcommand.py') as f:
+        resetcommand = f.read()
+
+    requires = re.compile(
+        '(self\.requires\(robot.\w+\)\s*)+'
+    )
+    match = requires.search(resetcommand)
+
+    old = match[0].strip()
+    new = '%s\n        self.requires(robot.%s)'
+    resetcommand = resetcommand.replace(old, new % (old, module))
+
+    with open('commands/resetcommand.py', 'w') as f:
+        f.write(resetcommand)
+
     print('Generated subsystem %s' % subsystem)
 
 
