@@ -40,9 +40,9 @@ class MoveCommand(Command):
         if self.avoidCollisions:
             try:
                 if self.distance < 0:
-                    clearance = robot.distance.getRearClearance()
+                    clearance = robot.drivetrain.getRearClearance()
                 else:
-                    clearance = robot.distance.getFrontClearance()
+                    clearance = robot.drivetrain.getFrontClearance()
 
                 if not self.blocked:
                     if clearance < 10:
