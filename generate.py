@@ -12,26 +12,21 @@ def generateSubsystem():
 
     subsystem = subsystem.strip()
     if not subsystem:
-        print("Subsystem name must not be blank")
-        sys.exit()
+        error('Subsystem name must not be blank')
 
     if subsystem[0].isdigit():
-        print('Subsystem name cannot start with a digit')
-        sys.exit()
+        error('Subsystem name cannot start with a digit')
 
     if not subsystem.isalnum():
-        print('Subsystem name must contain only letters and numbers')
-        sys.exit()
+        error('Subsystem name must contain only letters and numbers')
 
     if subsystem.lower() == subsystem:
-        print('Subsystem name should be ClassCased')
-        sys.exit()
+        error('Subsystem name should be ClassCased')
 
     module = subsystem.lower()
 
     if hasattr(robot, module):
-        print('There is already a subsystem for %s' % module)
-        sys.exit()
+        error('There is already a subsystem named %s' % module)
 
     with open('subsystems/%s.py' % module, 'w') as f:
         f.write('''
@@ -102,19 +97,16 @@ def generateCommand():
 
     command = command.strip()
     if not command:
-        print("Command name must not be blank")
-        sys.exit()
+        error('Command name must not be blank')
 
     if command[0].isdigit():
-        print('Command name cannot start with a digit')
-        sys.exit()
+        error('Command name cannot start with a digit')
 
     if not command.isalnum():
-        print('Command name must contain only letters and numbers')
-        sys.exit()
+        error('Command name must contain only letters and numbers')
 
     if command.lower() == command:
-        print('Command name should be ClassCased')
+        error('Command name should be ClassCased')
 
     inherits = None
     if command.endswith('CommandGroup'):
@@ -142,8 +134,7 @@ def generateCommand():
             inherits = bases[int(inherits)]
 
         if not inherits in bases:
-            print('Unknown base class %s' % inherits)
-            sys.exit()
+            error('Unknown base class %s' % inherits)
 
     if inherits == 'CommandGroup':
         if command.endswith('Command'):
@@ -165,32 +156,27 @@ def generateCommand():
             try:
                 float(duration)
             except ValueError:
-                print('Duration must be a number')
-                sys.exit()
+                error('Duration must be a number')
 
     subsystem = input('Which subsystem is %s for? ' % command)
     requirements = subsystem.strip().lower().split()
 
     for subsystem in requirements:
         if not hasattr(robot, subsystem):
-            print('Unknown subsystem %s' % subsystem)
-            sys.exit()
+            error('Unknown subsystem %s' % subsystem)
 
     if command == 'DefaultCommand':
         if len(requirements) == 0:
-            print('Subsystem is required for DefaultCommand')
-            sys.exit()
+            error('Subsystem is required for DefaultCommand')
 
         with open('subsystems/%s.py' % requirements[0]) as f:
             content = f.read()
 
         if 'initDefaultCommand' in content:
-            print('There is already a default command for this subsystem')
-            sys.exit()
+            error('There is already a default command for this subsystem')
 
         if '.setDefaultCommand' in content:
-            print('There is already a default command for this subsystem')
-            sys.exit()
+            error('There is already a default command for this subsystem')
 
         content += '''
 
@@ -260,6 +246,11 @@ def generateCommand():
         f.write(content)
 
     print('Created command %s' % command)
+
+
+def error(msg):
+    print('\033[91m%s\033[0m' % msg)
+    sys.exit()
 
 
 def usage():
