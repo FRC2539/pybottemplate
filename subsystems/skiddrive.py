@@ -1,6 +1,6 @@
 from .basedrive import BaseDrive
 from ctre._impl import ControlMode
-from wpilib.robotdrive import RobotDrive
+from wpilib.drive.robotdrivebase import RobotDriveBase
 import ports
 
 class SkidDrive(BaseDrive):
@@ -14,8 +14,10 @@ class SkidDrive(BaseDrive):
 
         '''Make the back motors follow the front.'''
         if len(self.motors) == 4:
-            self.motors[2].follow(self.motors[0])
-            self.motors[3].follow(self.motors[1])
+            self.motors[RobotDriveBase.MotorType.kRearLeft] \
+                .follow(self.motors[RobotDriveBase.MotorType.kFrontLeft])
+            self.motors[RobotDriveBase.MotorType.kRearRight] \
+                .follow(self.motors[RobotDriveBase.MotorType.kFrontRight])
 
         '''Invert encoders'''
         for motor in self.activeMotors:

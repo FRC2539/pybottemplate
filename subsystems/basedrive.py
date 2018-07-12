@@ -201,21 +201,20 @@ class BaseDrive(DebuggableSubsystem):
     def resetGyro(self):
         '''Force the navX to consider the current angle to be zero degrees.'''
 
-        self.navX.reset()
-        self.gyroOffset = 0
+        self.setGyroAngle(0)
 
 
     def setGyroAngle(self, angle):
         '''Tweak the gyro reading.'''
 
-        heading = self.naxX.getYaw()
-        self.gyroOffset = angle - heading
+        self.navX.reset()
+        self.navX.setAngleAdjustment(angle)
 
 
     def getAngle(self):
         '''Current gyro reading'''
 
-        return (self.navX.getYaw() + self.gyroOffset) % 360
+        return self.navX.getAngle() % 360
 
 
     def getAngleTo(self, targetAngle):

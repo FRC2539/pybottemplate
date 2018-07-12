@@ -1,5 +1,5 @@
 import math
-from wpilib.robotdrive import RobotDrive
+from wpilib.drive.robotdrivebase import RobotDriveBase
 
 from .basedrive import BaseDrive
 
@@ -32,8 +32,8 @@ class MecanumDrive(BaseDrive):
         self.activeMotors = self.motors
 
         '''Invert the motors on the left side.'''
-        self.motors[RobotDrive.MotorType.kFrontLeft].reverseSensor(True)
-        self.motors[RobotDrive.MotorType.kRearLeft].reverseSensor(True)
+        self.motors[RobotDriveBase.MotorType.kFrontLeft].reverseSensor(True)
+        self.motors[RobotDriveBase.MotorType.kRearLeft].reverseSensor(True)
 
 
     def _calculateSpeeds(self, x, y, rotate):
