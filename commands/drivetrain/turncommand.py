@@ -35,5 +35,6 @@ class TurnCommand(MoveCommand):
 
         inchesPerDegree = math.pi * Config('DriveTrain/width') / 360
         totalDistanceInInches = self.distance * inchesPerDegree
+        ticks = robot.drivetrain.inchesToTicks(totalDistanceInInches)
 
-        return robot.drivetrain.inchesToTicks(totalDistanceInInches)
+        return ticks * Config('DriveTrain/slip', 1.2)
