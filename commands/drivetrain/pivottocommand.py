@@ -18,7 +18,6 @@ class PivotToCommand(PivotCommand):
 
     def initialize(self):
         self.distance = robot.drivetrain.getAngleTo(self.targetDegrees)
-        print("Pivot %s degrees" % self.distance)
 
         # 0 = Left Side, 1 = Right Side
         self.pivotSide = 0
