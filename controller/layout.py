@@ -18,16 +18,18 @@ def init():
         - cancelWhenPressed: good for commands started with a different button
     '''
 
-    mainController = LogitechDualShock(0)
+    # The controller for driving the robot
+    driveController = LogitechDualShock(0)
 
-    logicalaxes.driveX = mainController.LeftX
-    logicalaxes.driveY = mainController.LeftY
-    logicalaxes.driveRotate = mainController.RightX
+    logicalaxes.driveX = driveController.LeftX
+    logicalaxes.driveY = driveController.LeftY
+    logicalaxes.driveRotate = driveController.RightX
 
-    mainController.Back.whenPressed(ResetCommand())
-    mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    driveController.Back.whenPressed(ResetCommand())
+    driveController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
 
-    backupController = LogitechDualShock(1)
 
-    backupController.Back.whenPressed(ResetCommand())
-    mainController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    # The controller for non-driving subsystems of the robot
+    componentController = LogitechDualShock(1)
+
+    componentController.Back.whenPressed(ResetCommand())

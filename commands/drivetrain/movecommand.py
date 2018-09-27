@@ -1,5 +1,4 @@
 from wpilib.command import Command
-from custom.config import Config
 from custom import driverhud
 import robot
 
@@ -20,6 +19,8 @@ class MoveCommand(Command):
         self.blocked = False
         self.avoidCollisions = avoidCollisions
         self.requires(robot.drivetrain)
+
+        self.precision = robot.drivetrain.inchesToTicks(1)
 
 
     def initialize(self):
@@ -76,7 +77,7 @@ class MoveCommand(Command):
         if self.blocked:
             return False
 
-        if self.isTimedOut() and robot.drivetrain.atPosition(20):
+        if self.isTimedOut() and robot.drivetrain.atPosition(self.precision):
             self.onTarget += 1
         else:
             self.onTarget = 0
