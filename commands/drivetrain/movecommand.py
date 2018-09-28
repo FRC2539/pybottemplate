@@ -1,5 +1,6 @@
 from wpilib.command import Command
 from custom import driverhud
+from custom.config import MissingConfigError
 import robot
 
 class MoveCommand(Command):
@@ -20,7 +21,10 @@ class MoveCommand(Command):
         self.avoidCollisions = avoidCollisions
         self.requires(robot.drivetrain)
 
-        self.precision = robot.drivetrain.inchesToTicks(1)
+        try:
+            self.precision = robot.drivetrain.inchesToTicks(1)
+        except MissingConfigError:
+            self.precision = 20
 
 
     def initialize(self):
