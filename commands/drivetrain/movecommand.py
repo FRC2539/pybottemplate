@@ -21,10 +21,10 @@ class MoveCommand(Command):
         self.avoidCollisions = avoidCollisions
         self.requires(robot.drivetrain)
 
-        try:
-            self.precision = robot.drivetrain.inchesToTicks(1)
-        except MissingConfigError:
-            self.precision = 20
+
+    def _initialize(self):
+        super()._initialize()
+        self.precision = robot.drivetrain.inchesToTicks(1)
 
 
     def initialize(self):
