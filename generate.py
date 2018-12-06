@@ -254,7 +254,12 @@ def error(msg):
 
 
 def usage():
-    print('usage: %s subject [args...]' % sys.argv[0])
+    usage = '''
+usage:
+    {0} command [CommandName]
+    {0} subsystem [SubsystemName]
+'''
+    print(usage.lstrip().format(sys.argv[0]))
     sys.exit()
 
 
