@@ -1,2 +1,3 @@
 pyfrc
 robotpy-ctre
+robotpy-navx
