@@ -2,14 +2,14 @@
 
 from commandbased import CommandBasedRobot
 from wpilib._impl.main import run
-from wpilib.robotbase import RobotBase
+from wpilib import RobotBase
 
 from custom import driverhud
 import controller.layout
 import subsystems
 import shutil, sys
 
-from wpilib.command.subsystem import Subsystem
+from wpilib.command import Subsystem
 
 from subsystems.monitor import Monitor as monitor
 from subsystems.drivetrain import DriveTrain as drivetrain

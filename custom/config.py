@@ -1,4 +1,4 @@
-from networktables import NetworkTables
+from networktables import NetworkTables, NetworkTable
 from networktables.entry import NetworkTableEntry
 
 class MissingConfigError(KeyError):
@@ -14,7 +14,7 @@ class Config:
 
     _values = {}
     _nt = None
-    _sep = NetworkTables.PATH_SEPARATOR
+    _sep = NetworkTable.PATH_SEPARATOR_CHAR
 
     def __init__(self, key, default=None):
         '''The key is the name that will be used in NetworkTables.'''
@@ -33,18 +33,18 @@ class Config:
             Config._nt = NetworkTables.getGlobalTable()
 
         try:
-            value = Config._nt.getValue(self.key, None)
+            value = Config._nt.getValue(self.key)
         except AttributeError:
             value = None
 
         if value is None and default is None:
             Config._values[self.key] = None
         else:
-            Config._values[self.key] = Config._nt.getAutoUpdateValue(
-                self.key,
-                value if value is not None else default,
-                False
-            )
+            Config._values[self.key] = Config._nt.getEntry( # was get getAutoUpdateValue
+                self.key)
+                #value if value is not None else default,
+                #False
+           # )
 
             '''Make entry persistent so it is saved to the roboRIO.'''
             Config._nt.setPersistent(self.key)

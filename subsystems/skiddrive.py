@@ -1,6 +1,6 @@
 from .basedrive import BaseDrive
-from ctre._impl import ControlMode
-from wpilib.drive.robotdrivebase import RobotDriveBase
+from ctre import ControlMode
+from wpilib.drive import RobotDriveBase
 import ports
 
 class SkidDrive(BaseDrive):

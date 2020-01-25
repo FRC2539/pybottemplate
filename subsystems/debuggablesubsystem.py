@@ -1,5 +1,5 @@
-from wpilib.command.subsystem import Subsystem
-from wpilib.livewindow import LiveWindow
+from wpilib.command import Subsystem
+from wpilib import LiveWindow
 
 class DebuggableSubsystem(Subsystem):
     '''

@@ -1,4 +1,4 @@
-from wpilib.buttons.button import Button
+from wpilib.buttons import Button
 
 class POVButton(Button):
     '''

@@ -4,7 +4,7 @@ import math
 
 from networktables import NetworkTables
 from ctre import ControlMode, NeutralMode, WPI_TalonSRX, FeedbackDevice
-from navx.ahrs import AHRS
+from navx import AHRS
 
 from custom.config import Config
 import ports
