@@ -51,7 +51,9 @@ class KryptonBot(CommandBasedRobot):
     @classmethod
     def subsystems(cls):
         vars = globals()
+        print('vars: ' + str(vars.items()))
         module = sys.modules['robot']
+
         for key, var in vars.items():
             try:
                 if issubclass(var, Subsystem) and var is not Subsystem:
