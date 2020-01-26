@@ -1,4 +1,4 @@
-from wpilib.command.instantcommand import InstantCommand
+from wpilib.command import InstantCommand
 
 import robot
 

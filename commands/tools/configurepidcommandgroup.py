@@ -1,4 +1,4 @@
-from wpilib.command.commandgroup import CommandGroup
+from wpilib.command import CommandGroup, WaitCommand, PrintCommand
 import commandbased.flowcontrol as fc
 
 from .setuseencoderscommand import SetUseEncodersCommand
@@ -7,8 +7,6 @@ from .resetpidcommand import ResetPIDCommand
 from .calculatemaxspeedcommand import CalculateMaxSpeedCommand
 from .calculateerrorcommand import CalculateErrorCommand
 from commands.drivetrain.setspeedcommand import SetSpeedCommand
-from wpilib.command.waitcommand import WaitCommand
-from wpilib.command.printcommand import PrintCommand
 from commands.network.alertcommand import AlertCommand
 
 from custom.config import Config
