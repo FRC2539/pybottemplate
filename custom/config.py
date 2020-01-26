@@ -53,7 +53,7 @@ class Config:
     def getValue(self):
         if Config._values[self.key] is None:
             try:
-                value = Config._nt.getValue(self.key, None)
+                value = Config._nt.getValue(self.key)
             except AttributeError as exc:
                 raise MissingConfigError('No key named %s' % self.key) from exc
 
