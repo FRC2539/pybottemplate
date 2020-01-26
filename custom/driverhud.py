@@ -63,7 +63,7 @@ def getAutonomousProgram():
 def showCommand(cmd):
     '''Display the given command on the dashboard.'''
 
-    name = str(cmd)
+    name = cmd.getName()
     name.replace('/', '_')
     SmartDashboard.putData('Commands/%s' % name, cmd)
 
