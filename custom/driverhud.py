@@ -28,7 +28,6 @@ def init():
     from commands.drivetrain.resettiltcommand import ResetTiltCommand
     from commands.tools.configurepidcommandgroup import ConfigurePIDCommandGroup
 
-
     '''
     Add commands to the autonChooser to make them available for selection by the
     driver. It is best to choose a command that will not break anything if run
