@@ -90,9 +90,9 @@ def showField():
 
     color = ds.getAlliance()
 
-    if color == ds.Alliance.Red:
+    if color == ds.Alliance.kRed:
         field.putValue('color', 'red')
-    elif color == ds.Alliance.Blue:
+    elif color == ds.Alliance.kBlue:
         field.putValue('color', 'blue')
 
     layout = ds.getGameSpecificMessage()

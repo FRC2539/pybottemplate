@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import wpilib.command
+wpilib.command.Command.isFinished = lambda x: False
+
 from commandbased import CommandBasedRobot
 from wpilib._impl.main import run
 from wpilib import RobotBase
@@ -57,7 +60,10 @@ class KryptonBot(CommandBasedRobot):
         for key, var in vars.items():
             try:
                 if issubclass(var, Subsystem) and var is not Subsystem:
-                    setattr(module, key, var())
+                    try:
+                        setattr(module, key, var())
+                    except Exception as e:
+                        raise ValueError(f'Could not instantiate {key}') from e
             except TypeError:
                 pass
 
