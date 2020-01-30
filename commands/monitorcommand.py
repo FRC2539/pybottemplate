@@ -19,5 +19,4 @@ class MonitorCommand(Command):
 
     def execute(self):
         '''Implement watchers here.'''
-
         pass

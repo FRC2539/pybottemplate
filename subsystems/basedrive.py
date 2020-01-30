@@ -353,7 +353,7 @@ class BaseDrive(DebuggableSubsystem):
                 getattr(motor, funcs[key])(0, value, 0)
                 getattr(motor, funcs[key])(1, value, 0)
 
-        #table.addTableListener(updatePID, localNotify=True)
+        table.addTableListener(updatePID, localNotify=True)
 
 
     def _configureMotors(self):
