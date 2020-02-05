@@ -1,4 +1,4 @@
-from .debuggablesubsystem import DebuggableSubsystem
+from wpilib.command import Subsystem
 
 import math
 
@@ -10,7 +10,7 @@ from custom.config import Config
 import ports
 
 
-class BaseDrive(DebuggableSubsystem):
+class BaseDrive(Subsystem):
     '''
     A general case drive train system. It abstracts away shared functionality of
     the various drive types that we can employ. Anything that can be done
@@ -66,19 +66,6 @@ class BaseDrive(DebuggableSubsystem):
         '''Allow changing CAN Talon settings from dashboard'''
         self._publishPID('Speed', 0)
         self._publishPID('Position', 1)
-
-
-        '''Add items that can be debugged in Test mode.'''
-        self.debugSensor('navX', self.navX)
-
-        self.debugMotor('Front Left Motor', self.motors[0])
-        self.debugMotor('Front Right Motor', self.motors[1])
-
-        try:
-            self.debugMotor('Back Left Motor', self.motors[2])
-            self.debugMotor('Back Right Motor', self.motors[3])
-        except IndexError:
-            pass
 
 
     def initDefaultCommand(self):
@@ -353,7 +340,7 @@ class BaseDrive(DebuggableSubsystem):
                 getattr(motor, funcs[key])(0, value, 0)
                 getattr(motor, funcs[key])(1, value, 0)
 
-        table.addTableListener(updatePID, localNotify=True)
+        table.addSubTableListener(updatePID, localNotify=True)
 
 
     def _configureMotors(self):

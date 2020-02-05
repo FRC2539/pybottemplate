@@ -35,7 +35,7 @@ def init():
     at the wrong time as the default command.
     '''
     autonChooser = SendableChooser()
-    autonChooser.addDefault('Autonomous', AutonomousCommandGroup())
+    autonChooser.setDefaultOption('Autonomous', AutonomousCommandGroup())
 
     SmartDashboard.putData('Autonomous Program', autonChooser)
 

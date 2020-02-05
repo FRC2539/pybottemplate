@@ -1,8 +1,12 @@
 from networktables import NetworkTables, NetworkTable
-from networktables.entry import NetworkTableEntry
 
 class MissingConfigError(KeyError):
     pass
+
+
+def configListener(table, key, entry, value, flags):
+    Config._values[key] = value.value()
+    Config._nt.setPersistent(key)
 
 
 class Config:
@@ -29,48 +33,26 @@ class Config:
         if key in Config._values:
             return
 
+        Config._values[self.key] = default
+
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
-        try:
-            value = Config._nt.getValue(self.key)
-        except AttributeError:
-            value = None
+        nf = NetworkTables.NotifyFlags
+        Config._nt.addEntryListener(
+            self.key,
+            configListener,
+            nf.IMMEDIATE | nf.LOCAL | nf.NEW | nf.UPDATE
+        )
 
-        if value is None and default is None:
-            Config._values[self.key] = None
-        else:
-            Config._values[self.key] = Config._nt.getEntry( # was get getAutoUpdateValue
-                self.key)
-                #value if value is not None else default,
-                #False
-           # )
-
-            '''Make entry persistent so it is saved to the roboRIO.'''
+        currentValue = Config._nt.getValue(self.key)
+        if currentValue is None and default is not None:
+            Config._nt.putValue(self.key, default)
             Config._nt.setPersistent(self.key)
 
 
     def getValue(self):
-        if Config._values[self.key] is None:
-            try:
-                value = Config._nt.getValue(self.key)
-            except AttributeError as exc:
-                raise MissingConfigError('No key named %s' % self.key) from exc
-
-            if value is None:
-                raise MissingConfigError('No key named %s' % self.key)
-
-            Config._values[self.key] = Config._nt.getAutoUpdateValue(
-                self.key,
-                value,
-                False
-            )
-            Config._nt.setPersistent(self.key)
-
-            return value
-
-        else:
-            return Config._values[self.key].value
+        return Config._values.get(self.key)
 
 
     def getKey(self):

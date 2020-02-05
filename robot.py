@@ -60,7 +60,7 @@ class KryptonBot(CommandBasedRobot):
                 if issubclass(var, Subsystem) and var is not Subsystem:
                     try:
                         setattr(module, key, var())
-                    except Exception as e:
+                    except TypeError as e:
                         raise ValueError(f'Could not instantiate {key}') from e
             except TypeError:
                 pass
