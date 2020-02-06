@@ -30,12 +30,12 @@ def generateSubsystem():
 
     with open('subsystems/%s.py' % module, 'w') as f:
         f.write('''
-from .debuggablesubsystem import DebuggableSubsystem
+from wpilib.command import Subsystem
 
 import ports
 
 
-class {subsystem}(DebuggableSubsystem):
+class {subsystem}(Subsystem):
     \'\'\'Describe what this subsystem does.\'\'\'
 
     def __init__(self):
@@ -137,6 +137,7 @@ def generateCommand():
             error('Unknown base class %s' % inherits)
 
     if inherits == 'CommandGroup':
+        inherits = 'fc.CommandFlow'
         if command.endswith('Command'):
             command += 'Group'
 
@@ -198,16 +199,16 @@ def generateCommand():
 
         path += '/%s' % requirements[0]
 
-    content = 'from wpilib.command.%s import %s' % (inherits.lower(), inherits)
-    content += '\n'
 
-    if inherits == 'CommandGroup':
-        content += 'import commandbased.flowcontrol as fc'
+    if inherits == 'fc.CommandFlow':
+        content = 'import commandbased.flowcontrol as fc'
+    else:
+        content = 'from wpilib.command import %s' % inherits
 
-    elif len(requirements) > 0:
-        content += '\nimport robot'
+        if len(requirements) > 0:
+            content += '\n\nimport robot'
 
-    content += '\n\nclass %s(%s):\n\n' % (command, inherits)
+    content += '\n\n\nclass %s(%s):\n\n' % (command, inherits)
 
     if inherits == 'TimedCommand' and duration == '':
         content += '    def __init__(self, timeout):\n'
@@ -225,7 +226,7 @@ def generateCommand():
 
     content += '\n\n'
 
-    if inherits == 'CommandGroup':
+    if inherits == 'fc.CommandFlow':
         content += '        # Add commands here with self.addSequential() and '
         content += 'self.addParallel()'
 
