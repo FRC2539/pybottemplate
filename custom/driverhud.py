@@ -39,9 +39,6 @@ def init():
 
     SmartDashboard.putData('Autonomous Program', autonChooser)
 
-    '''Display all currently running commands.'''
-    SmartDashboard.putData('Active Commands', Scheduler.getInstance())
-
     showCommand(ResetTiltCommand())
     showCommand(ConfigurePIDCommandGroup())
 
