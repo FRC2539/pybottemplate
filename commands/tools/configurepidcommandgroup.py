@@ -19,7 +19,7 @@ class ConfigurePIDCommandGroup(CommandGroup):
         output = '''
 Your F and P values have been configured. However, P is probably too small.
 Use MoveCommand to drive the robot a set distance. (If you have not already done
-so, calculate and set Encoder Tickes per Inch.) Keep doubling the P value until
+so, calculate and set Encoder Ticks per Inch.) Keep doubling the P value until
 the robot noticeably oscillates during its movement. To correct this
 oscillation, set a D value of 10 times P.
 
