@@ -36,21 +36,22 @@ class Config:
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
+        Config._values[key] = Config._nt.getValue(key, default)
+
         nf = NetworkTables.NotifyFlags
         Config._nt.addEntryListener(
             self.key,
             configListener,
-            nf.IMMEDIATE | nf.LOCAL | nf.NEW | nf.UPDATE
+            nf.LOCAL | nf.NEW | nf.UPDATE
         )
-        if default is not None:
-            Config._nt.setDefaultValue(self.key, default)
 
 
     def getValue(self):
-        try:
-            return Config._values[self.key]
-        except KeyError as e:
-            raise MissingConfigError from e
+        val = Config._values.get(self.key)
+        if val is None:
+            raise MissingConfigError(f'{self.key} not set')
+
+        return val
 
 
     def getKey(self):
