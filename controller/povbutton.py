@@ -13,6 +13,8 @@ class POVButton(Button):
         within 45 degrees of the passed angle.
         '''
 
+        super().__init__()
+
         self.validAngles = [angle, angle - 45, angle + 45]
         self.validAngles = [x % 360 for x in self.validAngles]
 
