@@ -36,22 +36,13 @@ class Config:
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+        Config._values[key] = Config._nt.getValue(key, default)
         Config._values[key] = Config._nt.getValue(key, default)
 
-=======
->>>>>>> aa93fec... Now with even more 2020
-=======
-        Config._values[key] = Config._nt.getValue(key, default)
-
->>>>>>> f10437b... Makes config values available immediately
         nf = NetworkTables.NotifyFlags
         Config._nt.addEntryListener(
             self.key,
             configListener,
-<<<<<<< HEAD
-<<<<<<< HEAD
             nf.LOCAL | nf.NEW | nf.UPDATE
         )
 
@@ -62,32 +53,22 @@ class Config:
             raise MissingConfigError(f'{self.key} not set')
 
         return val
-=======
-            nf.IMMEDIATE | nf.LOCAL | nf.NEW | nf.UPDATE
-=======
-            nf.LOCAL | nf.NEW | nf.UPDATE
->>>>>>> f10437b... Makes config values available immediately
-        )
 
 
     def getValue(self):
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         return Config._values.get(self.key)
->>>>>>> aa93fec... Now with even more 2020
-=======
+
         try:
             return Config._values[self.key]
         except KeyError as e:
             raise MissingConfigError from e
->>>>>>> 93f038d... Works around getValue change
-=======
+
         val = Config._values.get(self.key)
         if val is None:
             raise MissingConfigError(f'{self.key} not set')
 
         return val
->>>>>>> f10437b... Makes config values available immediately
 
 
     def getKey(self):
