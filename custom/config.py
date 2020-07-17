@@ -33,8 +33,6 @@ class Config:
         if key in Config._values:
             return
 
-        Config._values[self.key] = default
-
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
@@ -61,16 +59,20 @@ class Config:
 =======
             nf.IMMEDIATE | nf.LOCAL | nf.NEW | nf.UPDATE
         )
-
-        currentValue = Config._nt.getValue(self.key)
-        if currentValue is None and default is not None:
-            Config._nt.putValue(self.key, default)
-            Config._nt.setPersistent(self.key)
+        if default is not None:
+            Config._nt.setDefaultValue(self.key, default)
 
 
     def getValue(self):
+<<<<<<< HEAD
         return Config._values.get(self.key)
 >>>>>>> aa93fec... Now with even more 2020
+=======
+        try:
+            return Config._values[self.key]
+        except KeyError as e:
+            raise MissingConfigError from e
+>>>>>>> 93f038d... Works around getValue change
 
 
     def getKey(self):
