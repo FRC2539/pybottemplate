@@ -33,15 +33,21 @@ class Config:
         if key in Config._values:
             return
 
+        Config._values[self.key] = default
+
         if Config._nt is None:
             Config._nt = NetworkTables.getGlobalTable()
 
+<<<<<<< HEAD
         Config._values[key] = Config._nt.getValue(key, default)
 
+=======
+>>>>>>> aa93fec... Now with even more 2020
         nf = NetworkTables.NotifyFlags
         Config._nt.addEntryListener(
             self.key,
             configListener,
+<<<<<<< HEAD
             nf.LOCAL | nf.NEW | nf.UPDATE
         )
 
@@ -52,6 +58,19 @@ class Config:
             raise MissingConfigError(f'{self.key} not set')
 
         return val
+=======
+            nf.IMMEDIATE | nf.LOCAL | nf.NEW | nf.UPDATE
+        )
+
+        currentValue = Config._nt.getValue(self.key)
+        if currentValue is None and default is not None:
+            Config._nt.putValue(self.key, default)
+            Config._nt.setPersistent(self.key)
+
+
+    def getValue(self):
+        return Config._values.get(self.key)
+>>>>>>> aa93fec... Now with even more 2020
 
 
     def getKey(self):
