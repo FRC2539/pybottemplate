@@ -12,28 +12,8 @@ if [[ ! -d $PWD/.venv ]]; then
         echo "Aborting..."
         return
     fi
-    if [[ -z "`which virtualenv 2> /dev/null`" ]]; then
-        while true; do
-            read -p "You do not have virtualenv installed. Should I install it using pip? [Y/N]" yn
-            case $yn in
-                [Yy]* )
-                    if [[ -z "`which sudo 2> /dev/null`" ]]; then
-                        pip3 install virtualenv;
-                    else
-                        sudo pip3 install virtualenv;
-                    fi
-                    if [[ -z "`which virtualenv 2> /dev/null`" ]]; then
-                        echo 'Failed to install virtualenv'
-                        return
-                    fi
-                    break;;
-                [Nn]* ) echo "Please install virtualenv"; return;;
-                * ) echo "Answer yes or no";;
-            esac
-        done
-    fi
 
-    virtualenv -p python3 --no-site-packages $PWD/.venv
+    python3 -m venv $PWD/.venv
     $PWD/.venv/bin/pip install -U pip
     $PWD/.venv/bin/pip install -r $PWD/requirements.txt
 

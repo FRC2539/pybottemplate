@@ -17,11 +17,6 @@ function doUpdate
         root=`git rev-parse --show-toplevel`
         ln -sf $root/hooks/* $root/.git/hooks/
 
-        checkOnline
-
-        # Install any new requirements
-        pip install -r $PWD/requirements.txt > /dev/null
-
         # Re-enable direnv if there were .envrc changes
         if [[ `which direnv` ]]; then
             if [[ `direnv status | grep 'Found RC allowed false'` ]]; then
@@ -31,14 +26,10 @@ function doUpdate
         fi
     fi
 
-    # Update all modules
-    pip list --outdated --format=freeze --disable-pip-version-check | grep -v '^\-e' > .pipup
+    checkOnline
 
-    if [[ $? -eq 0 ]]; then
-        cat .pipup | cut -d = -f 1  | xargs -n1 pip install -U --disable-pip-version-check > /dev/null
-    fi
-
-    rm -f .pipup
+    # Install and/or update requirements
+    pip install -Uq -r $PWD/requirements.txt > /dev/null
 }
 
 if [[ "$1" == "envrc" ]]; then
