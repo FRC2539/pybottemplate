@@ -1,16 +1,16 @@
-from wpilib.command import Subsystem
+from .cougarsystem import *
 
 import math
 
 from networktables import NetworkTables
-from ctre import ControlMode, NeutralMode, WPI_TalonSRX, FeedbackDevice
+from ctre import ControlMode, NeutralMode, WPI_TalonFX, FeedbackDevice
 from navx import AHRS
 
 from custom.config import Config
 import ports
 
 
-class BaseDrive(Subsystem):
+class BaseDrive(SubsystemBase):
     '''
     A general case drive train system. It abstracts away shared functionality of
     the various drive types that we can employ. Anything that can be done
@@ -26,22 +26,22 @@ class BaseDrive(Subsystem):
         '''
         try:
             self.motors = [
-                WPI_TalonSRX(ports.drivetrain.frontLeftMotorID),
-                WPI_TalonSRX(ports.drivetrain.frontRightMotorID),
-                WPI_TalonSRX(ports.drivetrain.backLeftMotorID),
-                WPI_TalonSRX(ports.drivetrain.backRightMotorID),
+                WPI_TalonFX(ports.drivetrain.frontLeftMotorID),
+                WPI_TalonFX(ports.drivetrain.frontRightMotorID),
+                WPI_TalonFX(ports.drivetrain.backLeftMotorID),
+                WPI_TalonFX(ports.drivetrain.backRightMotorID),
             ]
 
         except AttributeError:
             self.motors = [
-                WPI_TalonSRX(ports.drivetrain.leftMotorID),
-                WPI_TalonSRX(ports.drivetrain.rightMotorID),
+                WPI_TalonFX(ports.drivetrain.leftMotorID),
+                WPI_TalonFX(ports.drivetrain.rightMotorID),
             ]
 
         for motor in self.motors:
-            motor.setNeutralMode(NeutralMode.Coast)
+            motor.setNeutralMode(NeutralMode.Brake)
             motor.setSafetyEnabled(False)
-            motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0)
+            motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0)
 
         '''
         Subclasses should configure motors correctly and populate activeMotors.
