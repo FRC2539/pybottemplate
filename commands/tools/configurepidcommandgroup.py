@@ -1,4 +1,4 @@
-from wpilib.command import CommandGroup, WaitCommand, PrintCommand
+from commands2 import CommandGroup, WaitCommand, PrintCommand
 import commandbased.flowcontrol as fc
 
 from .setuseencoderscommand import SetUseEncodersCommand

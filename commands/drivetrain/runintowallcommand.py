@@ -1,9 +1,9 @@
 
-from wpilib.command import Command
+from commands2 import CommandBase
 
 import robot
 
-class RunIntoWallCommand(Command):
+class RunIntoWallCommand(CommandBase):
     '''Drives the robot at a steady speed until it crashes into something.'''
 
     def __init__(self, timelimit=None):

@@ -1,4 +1,4 @@
-from wpilib.command import InstantCommand
+from commands2 import InstantCommand
 
 from custom import driverhud
 

@@ -1,9 +1,7 @@
-import commandbased.flowcontrol as fc
+from commands2 import SequentialCommandGroup
 
 
-class AutonomousCommandGroup(fc.CommandFlow):
+class AutonomousCommandGroup(SequentialCommandGroup):
 
     def __init__(self):
         super().__init__('Autonomous')
-
-        # Add commands here with self.addSequential() and self.addParallel()

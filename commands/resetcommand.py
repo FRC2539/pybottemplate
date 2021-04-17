@@ -1,4 +1,4 @@
-from wpilib.command import InstantCommand
+from commands2 import InstantCommand
 
 import robot
 
@@ -11,7 +11,7 @@ class ResetCommand(InstantCommand):
     '''
 
     def __init__(self):
-        super().__init__('Reset')
+        super().__init__()
 
         '''Require all subsystems to reset.'''
-        self.requires(robot.drivetrain)
+        self.addRequirements([robot.drivetrain])

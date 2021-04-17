@@ -1,9 +1,9 @@
-from wpilib.command import Command
+from commands2 import CommandBase
 from custom import driverhud
 from custom.config import MissingConfigError
 import robot
 
-class MoveCommand(Command):
+class MoveCommand(CommandBase):
 
     def __init__(self, distance, avoidCollisions=True, name=None):
         '''

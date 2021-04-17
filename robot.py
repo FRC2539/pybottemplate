@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import wpilib.command
-wpilib.command.Command.isFinished = lambda x: False
-
-from commandbased import CommandBasedRobot
+from commands2 import TimedCommandRobot
 from wpilib._impl.main import run
 from wpilib import RobotBase
 
@@ -17,7 +14,7 @@ from wpilib.command import Subsystem
 from subsystems.monitor import Monitor as monitor
 from subsystems.drivetrain import DriveTrain as drivetrain
 
-class KryptonBot(CommandBasedRobot):
+class KryptonBot(TimedCommandRobot):
     '''Implements a Command Based robot design'''
 
     def robotInit(self):
