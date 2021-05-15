@@ -81,6 +81,9 @@ class BaseDrive(CougarSystem):
             constants.drivetrain.turnMotorGearRatio
         )  # 12.8 motor rotations per wheel rotation (on x-axis).
 
+        # Tell the robot to use encoders.
+        self.useEncoders = True
+
     def initDefaultCommand(self):
         '''
         By default, unless another command is running that requires this

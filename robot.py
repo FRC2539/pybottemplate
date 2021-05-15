@@ -43,7 +43,6 @@ class KryptonBot(TimedCommandRobot):
 
         # Schedule the autonomous command
         auton = driverhud.getAutonomousProgram()
-        auton.start()
         driverhud.showInfo("Starting %s" % auton)
 
 
