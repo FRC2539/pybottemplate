@@ -11,22 +11,15 @@ logicalaxes.registerAxis('driveY')
 logicalaxes.registerAxis('driveRotate')
 
 class DriveCommand(CommandBase):
-    def __init__(self, speedLimit):
-        super().__init__('DriveCommand %s' % speedLimit)
+    def __init__(self):
+        super().__init__()
 
-        self.requires(robot.drivetrain)
-        self.speedLimit = speedLimit
-
+        self.addRequirements(robot.drivetrain)
 
     def initialize(self):
         robot.drivetrain.stop()
         robot.drivetrain.setProfile(0)
-        try:
-            robot.drivetrain.setSpeedLimit(self.speedLimit)
-        except (ValueError, MissingConfigError):
-            print('Could not set speed to %s' % self.speedLimit)
-            driverhud.showAlert('Drive Train is not configured')
-
+        
         self.lastY = None
         self.slowed = False
 

@@ -89,7 +89,7 @@ class BaseDrive(CougarSystem):
         '''
         from commands.drivetrain.drivecommand import DriveCommand
 
-        self.setDefaultCommand(DriveCommand(self.speedLimit))
+        self.setDefaultCommand(DriveCommand())
 
 
     def move(self, x, y, rotate):

@@ -1,14 +1,17 @@
-from wpilib.command import CommandGroup
-import commandbased.flowcontrol as fc
+from commands2 import ParallelCommandGroup
 
 import robot
 
 from .drivetrain.resettiltcommand import ResetTiltCommand
 
-class StartUpCommandGroup(CommandGroup):
+class StartUpCommandGroup(ParallelCommandGroup):
 
     def __init__(self):
-        super().__init__('Start Up')
-        self.setRunWhenDisabled(True)
+        super().__init__()
 
-        self.addParallel(ResetTiltCommand())
+        robot.drivetrain.initDefaultCommand()
+
+        self.addCommands(ResetTiltCommand())
+
+    def runsWhenDisabled(self):
+        return True

@@ -8,6 +8,8 @@ import inspect
 
 from commands2 import SubsystemBase
 
+from ctre import Orchestra
+
 from networktables import NetworkTables
 
 ALLOWPRINTS = True
@@ -45,8 +47,17 @@ def enablePrints():
 
 
 class CougarSystem(SubsystemBase):
+    """
+    A middle-man class between subsystems
+    and the base subsystem. Please inherit
+    from this class when writing a subsystem.
+    Features easy networktable access and print
+    control!
+    """
 
     intialized = False
+
+    orchestra = Orchestra()
 
     def __init__(self, subsystemName="Unknown Subsystem"):
 
@@ -64,9 +75,16 @@ class CougarSystem(SubsystemBase):
             CougarSystem.intialized = True
 
     def intializeNTServer(self):
+        """
+        Do not call this please. Only call once in the first CougarSystem init.
+        """
         NetworkTables.initialize(server="roborio-2539-frc.local")
 
     def put(self, valueName, value):
+        """
+        Assigns a value to a networktable value
+        with the corresponding key given!
+        """
         try:
             self.table.putValue(valueName, value)
 
@@ -87,20 +105,39 @@ class CougarSystem(SubsystemBase):
                     "Unrecognizable Data Type . . . \nShould be a: boolean, int, float, string, list of bools, \nlist of strings, list of numbers."
                 )
 
-    def get(self, valueName, default=None):
+    def get(self, valueName, default):
+        """
+        Get the value of the key with the
+        given name.
+        """
         return self.table.getValue(valueName, default)  # Returns None if it doesn't exist.
 
     def hasChanged(self, valueName, compareTo):
+        """
+        Has this networktable value changed?
+        Returns true if the value you give does
+        not equal the current value of the networktable.
+        """
         if compareTo is None:
             return True
         return not self.table.getValue(valueName, None) == compareTo
 
     def delete(self, valueName):
+        """
+        Deletes the networktable key and value
+        with the given value.
+        """
         self.table.delete(valueName)
 
     def constantlyUpdate(self, valueName, call):
-        # The callable should take nothing (or use a lambda), and return the desired, updated value. For example, if
-        # you wanted RPM: "self.motor.getRPM()", or something of the liking.
+        """
+        Constantly updates this networktable value so you
+        don't have to! This is nice for something like a shooter'sRPM.
+        The callable should take nothing (or use a lambda),
+        and return the desired, updated value. For example, if
+        you wanted RPM: "self.motor.getRPM", or
+        something of the liking.
+        """
 
         if not callable(call):
             raise Exception(
@@ -112,9 +149,41 @@ class CougarSystem(SubsystemBase):
 
         self.updateThese[valueName] = call
 
-    def feed(self):  # Call in periodic.
+    def feed(self):
+        """
+        Called in periodic. This does all the updating stuff needed!
+        Do not call this yourself (unless it's in the periodic of
+        course).
+        """
         for key, value in self.updateThese.items():
             self.put(key, value())
 
-    def periodic(self):  # If you override this, make sure to call feed()!
+    def addOrchestraInstrument(self, motor):
+        """
+        Add a falcon 500 to the robot's orchestra!
+        """
+        CougarSystem.orchestra.addInstrument(motor)
+
+    def loadSong(self, fileName):
+        """
+        Prepares music file to play.
+        """
+        CougarSystem.orchestra.loadMusic("/home/lvuser/py/" + fileName)
+
+    def playSong(self):
+        """
+        Play the loaded song.
+        """
+        CougarSystem.orchestra.play()
+
+    def stopSong(self):
+        """
+        Stop the loaded song.
+        """
+        CougarSystem.orchestra.stop()
+
+    def periodic(self):
+        """
+        Please remember to call self.feed if you override this!
+        """
         self.feed()

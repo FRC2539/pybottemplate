@@ -26,7 +26,7 @@ def init():
     logicalaxes.driveRotate = driveController.RightX
 
     driveController.Back.whenPressed(ResetCommand())
-    driveController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
+    driveController.X.toggleWhenPressed(DriveCommand())
 
 
     # The controller for non-driving subsystems of the robot

@@ -1,5 +1,5 @@
 from wpilib import Joystick
-from wpilib.buttons import JoystickButton
+from commands2.button import JoystickButton
 
 from .controlleraxis import ControllerAxis
 from .povbutton import POVButton

@@ -5,9 +5,9 @@ import robot
 class ResetPIDCommand(InstantCommand):
 
     def __init__(self):
-        super().__init__('Reset PID values')
+        super().__init__()
 
-        self.requires(robot.drivetrain)
+        self.addRequirements(robot.drivetrain)
 
 
     def initialize(self):

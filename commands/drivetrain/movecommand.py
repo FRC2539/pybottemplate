@@ -14,12 +14,12 @@ class MoveCommand(CommandBase):
         if name is None:
             name = 'Move %f inches' % distance
 
-        super().__init__(name, 0.2)
+        super().__init__()
 
         self.distance = distance
         self.blocked = False
         self.avoidCollisions = avoidCollisions
-        self.requires(robot.drivetrain)
+        self.addRequirements(robot.drivetrain)
 
 
     def _initialize(self):

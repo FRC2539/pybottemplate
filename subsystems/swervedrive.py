@@ -16,8 +16,8 @@ import math
 
 
 class SwerveDrive(BaseDrive):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, name):
+        super().__init__(name)
 
         """
         "Rollers? Where we're going, we don't need 'rollers'." - Ben Bistline, 2021

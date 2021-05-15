@@ -6,9 +6,7 @@ class AlertCommand(InstantCommand):
 
     def __init__(self, msg, type='Alerts'):
         '''Show an alert on the dashboard'''
-        super().__init__('Alert: %s' % msg)
-
-        self.setRunWhenDisabled(True)
+        super().__init__()
 
         self.msg = msg
         self.type = type
@@ -16,7 +14,6 @@ class AlertCommand(InstantCommand):
 
     def initialize(self):
         driverhud.showAlert(self.msg, self.type)
-
 
     def setMessage(self, msg):
         self.msg = msg

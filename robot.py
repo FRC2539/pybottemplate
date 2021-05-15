@@ -4,12 +4,13 @@ from commands2 import TimedCommandRobot
 from wpilib._impl.main import run
 from wpilib import RobotBase
 
+from commands import autoconfig
 from custom import driverhud
 import controller.layout
 import subsystems
 import shutil, sys
 
-from wpilib.command import Subsystem
+from subsystems.cougarsystem import CougarSystem
 
 from subsystems.monitor import Monitor as monitor
 from subsystems.drivetrain import DriveTrain as drivetrain
@@ -24,13 +25,16 @@ class KryptonBot(TimedCommandRobot):
             import mockdata
 
         self.subsystems()
-        controller.layout.init()
-        driverhud.init()
 
         from commands.startupcommandgroup import StartUpCommandGroup
-        StartUpCommandGroup().start()
+        StartUpCommandGroup().schedule()
 
+        driverhud.init()
+        autoconfig.init()
+        controller.layout.init()
 
+        self.selectedAuto = autoconfig.getAutoProgram()
+        
     def autonomousInit(self):
         '''This function is called each time autonomous mode starts.'''
 
@@ -54,7 +58,7 @@ class KryptonBot(TimedCommandRobot):
         module = sys.modules['robot']
         for key, var in vars.items():
             try:
-                if issubclass(var, Subsystem) and var is not Subsystem:
+                if issubclass(var, CougarSystem) and var is not CougarSystem:
                     try:
                         setattr(module, key, var())
                     except TypeError as e:
