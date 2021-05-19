@@ -58,6 +58,10 @@ class CougarSystem(SubsystemBase):
     intialized = False
 
     orchestra = Orchestra()
+    
+    messageSystemTable = NetworkTables.getTable("MessagingSystem")
+    messages = []
+    messageSystemTable.putStringArray('messages', messages)
 
     def __init__(self, subsystemName="Unknown Subsystem"):
 
@@ -105,12 +109,12 @@ class CougarSystem(SubsystemBase):
                     "Unrecognizable Data Type . . . \nShould be a: boolean, int, float, string, list of bools, \nlist of strings, list of numbers."
                 )
 
-    def get(self, valueName, default):
+    def get(self, valueName):
         """
         Get the value of the key with the
         given name.
         """
-        return self.table.getValue(valueName, default)  # Returns None if it doesn't exist.
+        return self.table.getValue(valueName, None)  # Returns None if it doesn't exist.
 
     def hasChanged(self, valueName, compareTo):
         """
@@ -148,6 +152,16 @@ class CougarSystem(SubsystemBase):
             self.put(valueName, call())
 
         self.updateThese[valueName] = call
+        
+    def sendMessage(self, message: str):
+        """
+        Sends a message to the driver station
+        via networktables.
+        """
+        if len(CougarSystem.messages) > 99:
+            CougarSystem.messages.pop(0)
+            
+        CougarSystem.messages.append(self.tableName + ': ' + message)
 
     def feed(self):
         """
