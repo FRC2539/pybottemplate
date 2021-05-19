@@ -24,7 +24,7 @@ class AutonomousCommandGroup(SequentialCommandGroup):
             if var.lower() == self.currentAuto:
                 toRun = var
                 break
-            
+                        
         eval("self." + toRun + "()")  # Runs the method
 
     def example(self):
