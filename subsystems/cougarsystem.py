@@ -163,6 +163,17 @@ class CougarSystem(SubsystemBase):
             
         CougarSystem.messages.append(self.tableName + ': ' + message)
 
+    @staticmethod
+    def sendGeneralMessage(self, message: str):
+        """
+        Used in MessageCommand. Do not use for subsystems! Instead,
+        use sendMessage(). 
+        """
+        if len(CougarSystem.messages) > 99:
+            CougarSystem.messages.pop(0)
+            
+        CougarSystem.messages.append('Robot: ' + message)
+        
     def feed(self):
         """
         Called in periodic. This does all the updating stuff needed!
