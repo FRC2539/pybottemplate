@@ -16,10 +16,10 @@ networktables.ini
 .venv
 
 # VSCode stuff
-.vscode
+./vscode
 
 # IntelliJ stuff
-.idea
+./idea
 
 # Pip
 .pipup
