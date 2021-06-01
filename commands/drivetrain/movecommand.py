@@ -16,9 +16,9 @@ class MoveCommand(CommandBase):
             name = "Move %f inches" % distance
 
         super().__init__()
-        
+
         if isinstance(robot.drivetain, SwerveDrive):
-            
+
             self.distance = -distance
             self.angle = angle
             self.tol = tolerance  # Angle tolerance in degrees.

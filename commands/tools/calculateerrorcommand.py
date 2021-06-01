@@ -4,6 +4,7 @@ from networktables import NetworkTables
 import robot
 from custom.config import Config
 
+
 class CalculateErrorCommand(MoveCommand):
 
     errors = []
@@ -12,14 +13,12 @@ class CalculateErrorCommand(MoveCommand):
         super().__init__(30 * direction)
 
         self.addRequirements(robot.drivetrain)
-        Config('DriveTrain/wheelDiameter', 8)
-        self.table = NetworkTables.getTable('DriveTrain/Speed')
-
+        Config("DriveTrain/wheelDiameter", 8)
+        self.table = NetworkTables.getTable("DriveTrain/Speed")
 
     def initialize(self):
-        self.table.putValue('P', 0)
+        self.table.putValue("P", 0)
         super().initialize()
-
 
     def isFinished(self):
         if not self.isTimedOut():
@@ -35,9 +34,8 @@ class CalculateErrorCommand(MoveCommand):
 
         return self.onTarget > 5
 
-
     def end(self):
         self.errors.append(robot.drivetrain.averageError())
 
         avgError = sum(self.errors) / len(self.errors)
-        self.table.putValue('P', 415 / avgError)
+        self.table.putValue("P", 415 / avgError)

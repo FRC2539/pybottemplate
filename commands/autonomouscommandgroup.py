@@ -24,14 +24,14 @@ class AutonomousCommandGroup(SequentialCommandGroup):
             if var.lower() == self.currentAuto:
                 toRun = var
                 break
-                        
+
         eval("self." + toRun + "()")  # Runs the method
 
     def example(self):
         """
         Define the function using the name of the autonomous program. It should
         then appear on the driverstation. Put a exclamation point in front of the chosen
-        default one! If there is no default selected, the default will be the auto first 
+        default one! If there is no default selected, the default will be the auto first
         in alphabetical order.
         """
         pass

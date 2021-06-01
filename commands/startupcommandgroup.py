@@ -4,8 +4,8 @@ import robot
 
 from .drivetrain.resettiltcommand import ResetTiltCommand
 
-class StartUpCommandGroup(ParallelCommandGroup):
 
+class StartUpCommandGroup(ParallelCommandGroup):
     def __init__(self):
         super().__init__()
 

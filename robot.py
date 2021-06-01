@@ -37,7 +37,7 @@ class KryptonBot(TimedCommandRobot):
         controller.layout.init()
         autoconfig.init()
         driverhud.init()
-        
+
         self.selectedAuto = autoconfig.getAutoProgram()
         self.auto = AutonomousCommandGroup()
 
@@ -59,7 +59,7 @@ class KryptonBot(TimedCommandRobot):
 
         # Schedule the autonomous command
         self.auto.schedule()
-        
+
         driverhud.showInfo("Starting %s" % self.auton)
 
     def disabledInit(self):

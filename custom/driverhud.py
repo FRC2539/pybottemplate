@@ -24,6 +24,7 @@ def init():
     if autonChooser is not None and not RobotBase.isSimulation():
         raise RuntimeError("Driver HUD has already been initialized")
 
+
 def getAutonomousProgram():
     """
     Return the autonomous program as selected on the dashboard. It is up to the

@@ -6,9 +6,10 @@ from custom.config import Config, MissingConfigError
 from custom import driverhud
 import math
 
-logicalaxes.registerAxis('driveX')
-logicalaxes.registerAxis('driveY')
-logicalaxes.registerAxis('driveRotate')
+logicalaxes.registerAxis("driveX")
+logicalaxes.registerAxis("driveY")
+logicalaxes.registerAxis("driveRotate")
+
 
 class DriveCommand(CommandBase):
     def __init__(self):
@@ -19,10 +20,9 @@ class DriveCommand(CommandBase):
     def initialize(self):
         robot.drivetrain.stop()
         robot.drivetrain.setProfile(0)
-        
+
         self.lastY = None
         self.slowed = False
-
 
     def execute(self):
         # Avoid quick changes in direction
@@ -46,7 +46,5 @@ class DriveCommand(CommandBase):
             correction = 0
 
         robot.drivetrain.move(
-            logicalaxes.driveX.get(),
-            y - correction,
-            logicalaxes.driveRotate.get()
+            logicalaxes.driveX.get(), y - correction, logicalaxes.driveRotate.get()
         )

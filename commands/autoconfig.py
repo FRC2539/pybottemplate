@@ -32,17 +32,20 @@ def init():
     try:
         val = definedAutos[0]
         for auto in definedAutos:
-            if auto[-1] == '0':
+            if auto[-1] == "0":
                 val = auto
         table.putString("selectedAuto", val)
-    except(IndexError):
+    except (IndexError):
         table.putString("selectedAuto", "NO AUTO FOUND")
+
 
 def getAutoProgram():
     """
     Returns the first defined auto if none are selected.
     """
     try:
-        return table.getString("selectedAuto", (definedAutos[0]).lower()) # Should never call the default here since default is populated above.
-    except(IndexError):
+        return table.getString(
+            "selectedAuto", (definedAutos[0]).lower()
+        )  # Should never call the default here since default is populated above.
+    except (IndexError):
         raise Exception("You don't have any autos defined!")

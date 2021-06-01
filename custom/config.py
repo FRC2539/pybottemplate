@@ -1,5 +1,6 @@
 from networktables import NetworkTables, NetworkTable
 
+
 class MissingConfigError(KeyError):
     pass
 
@@ -10,21 +11,21 @@ def configListener(table, key, entry, value, flags):
 
 
 class Config:
-    '''
+    """
     Config values are stored on the roboRIO and updated using NetworkTables.
     By default the stored value is None, so make sure you set a value before
     running code that uses it.
-    '''
+    """
 
     _values = {}
     _nt = None
     _sep = NetworkTable.PATH_SEPARATOR_CHAR
 
     def __init__(self, key, default=None):
-        '''The key is the name that will be used in NetworkTables.'''
+        """The key is the name that will be used in NetworkTables."""
 
         if self._sep not in key:
-            key = 'Config%s%s' % (self._sep, key)
+            key = "Config%s%s" % (self._sep, key)
 
         if key.startswith(self._sep):
             key = key[1:]
@@ -41,19 +42,15 @@ class Config:
 
         nf = NetworkTables.NotifyFlags
         Config._nt.addEntryListener(
-            self.key,
-            configListener,
-            nf.LOCAL | nf.NEW | nf.UPDATE
+            self.key, configListener, nf.LOCAL | nf.NEW | nf.UPDATE
         )
-
 
     def getValue(self):
         val = Config._values.get(self.key)
         if val is None:
-            raise MissingConfigError(f'{self.key} not set')
+            raise MissingConfigError(f"{self.key} not set")
 
         return val
-
 
     def getValue(self):
 
@@ -66,22 +63,20 @@ class Config:
 
         val = Config._values.get(self.key)
         if val is None:
-            raise MissingConfigError(f'{self.key} not set')
+            raise MissingConfigError(f"{self.key} not set")
 
         return val
-
 
     def getKey(self):
         return self.key
 
-
-    '''
+    """
     We overload the "magic methods" for different primitive types that we would
     like to store in Config.
-    '''
+    """
+
     def __bool__(self):
         return bool(self.getValue())
-
 
     def __float__(self):
         try:
@@ -89,16 +84,14 @@ class Config:
         except (TypeError, ValueError):
             return 0.0
 
-
     def __int__(self):
         try:
             return int(self.getValue())
         except (TypeError, ValueError):
             return 0
 
-
     def __str__(self):
-        '''If we're requesting a string for a number, show its key.'''
+        """If we're requesting a string for a number, show its key."""
 
         try:
             float(self.getValue())
@@ -108,10 +101,10 @@ class Config:
         except (TypeError, ValueError):
             return str(self.getValue())
 
-
-    '''
+    """
     Treat config values like normal numbers, if possible.
-    '''
+    """
+
     def __lt__(self, other):
         return self.getValue() < other
 

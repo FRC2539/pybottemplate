@@ -4,6 +4,7 @@ import math
 
 import robot
 
+
 class CalculateMaxSpeedCommand(InstantCommand):
 
     measuredSpeeds = []
@@ -12,8 +13,7 @@ class CalculateMaxSpeedCommand(InstantCommand):
         super().__init__()
 
         self.addRequirements(robot.drivetrain)
-        self.table = NetworkTables.getTable('DriveTrain')
-
+        self.table = NetworkTables.getTable("DriveTrain")
 
     def initialize(self):
         for speed in robot.drivetrain.getSpeeds():
@@ -22,8 +22,8 @@ class CalculateMaxSpeedCommand(InstantCommand):
         # Select the smallest max speed
         maxSpeed = min(self.measuredSpeeds)
 
-        self.table.putValue('maxSpeed', math.floor(maxSpeed))
-        self.table.putValue('normalSpeed', round(maxSpeed * 0.7))
-        self.table.putValue('preciseSpeed', round(maxSpeed * 0.3))
+        self.table.putValue("maxSpeed", math.floor(maxSpeed))
+        self.table.putValue("normalSpeed", round(maxSpeed * 0.7))
+        self.table.putValue("preciseSpeed", round(maxSpeed * 0.3))
 
-        self.table.putValue('Speed/F', 1023 / maxSpeed)
+        self.table.putValue("Speed/F", 1023 / maxSpeed)

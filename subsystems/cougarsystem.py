@@ -58,10 +58,10 @@ class CougarSystem(SubsystemBase):
     intialized = False
 
     orchestra = Orchestra()
-    
+
     messageSystemTable = NetworkTables.getTable("MessagingSystem")
     messages = []
-    messageSystemTable.putStringArray('messages', messages)
+    messageSystemTable.putStringArray("messages", messages)
 
     def __init__(self, subsystemName="Unknown Subsystem"):
 
@@ -152,7 +152,7 @@ class CougarSystem(SubsystemBase):
             self.put(valueName, call())
 
         self.updateThese[valueName] = call
-        
+
     def sendMessage(self, message: str):
         """
         Sends a message to the driver station
@@ -160,20 +160,20 @@ class CougarSystem(SubsystemBase):
         """
         if len(CougarSystem.messages) > 99:
             CougarSystem.messages.pop(0)
-            
-        CougarSystem.messages.append(self.tableName + ': ' + message)
+
+        CougarSystem.messages.append(self.tableName + ": " + message)
 
     @staticmethod
     def sendGeneralMessage(self, message: str):
         """
         Used in MessageCommand. Do not use for subsystems! Instead,
-        use sendMessage(). 
+        use sendMessage().
         """
         if len(CougarSystem.messages) > 99:
             CougarSystem.messages.pop(0)
-            
-        CougarSystem.messages.append('Robot: ' + message)
-        
+
+        CougarSystem.messages.append("Robot: " + message)
+
     def feed(self):
         """
         Called in periodic. This does all the updating stuff needed!

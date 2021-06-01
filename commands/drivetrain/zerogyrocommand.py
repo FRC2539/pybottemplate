@@ -2,13 +2,12 @@ from commands2 import InstantCommand
 
 import robot
 
-class ZeroGyroCommand(InstantCommand):
 
+class ZeroGyroCommand(InstantCommand):
     def __init__(self):
-        super().__init__('Zero Gyro')
+        super().__init__("Zero Gyro")
 
         self.requires(robot.drivetrain)
-
 
     def initialize(self):
         robot.drivetrain.resetGyro()

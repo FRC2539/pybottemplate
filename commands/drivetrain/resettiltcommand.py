@@ -2,8 +2,8 @@ from commands2 import InstantCommand
 
 import robot
 
-class ResetTiltCommand(InstantCommand):
 
+class ResetTiltCommand(InstantCommand):
     def __init__(self):
         super().__init__()
 
