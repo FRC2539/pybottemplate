@@ -6,6 +6,9 @@ import ports
 
 class SkidDrive(BaseDrive):
     """A drive base where all wheels on each side move together."""
+    
+    def __init__(self, name):
+        super().__init__(name)
 
     def _configureMotors(self):
 
