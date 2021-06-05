@@ -78,6 +78,7 @@ class KryptonBot(TimedCommandRobot):
         super().handleCrash()
         driverhud.showAlert("Fatal Error: %s" % error)
 
+
     @classmethod
     def subsystems(cls):
         vars = globals()
