@@ -17,3 +17,6 @@ networktables.ini
 
 # Pip
 .pipup
+
+# VSCode
+.vscode
