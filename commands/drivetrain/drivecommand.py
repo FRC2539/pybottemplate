@@ -1,4 +1,4 @@
-from wpilib.command import Command
+from commands2 import CommandBase
 
 import robot
 from controller import logicalaxes
@@ -6,31 +6,23 @@ from custom.config import Config, MissingConfigError
 from custom import driverhud
 import math
 
-logicalaxes.registerAxis('driveX')
-logicalaxes.registerAxis('driveY')
-logicalaxes.registerAxis('driveRotate')
+logicalaxes.registerAxis("driveX")
+logicalaxes.registerAxis("driveY")
+logicalaxes.registerAxis("driveRotate")
 
-class DriveCommand(Command):
-    def __init__(self, speedLimit):
-        super().__init__('DriveCommand %s' % speedLimit)
 
-        self.requires(robot.drivetrain)
-        self.speedLimit = speedLimit
+class DriveCommand(CommandBase):
+    def __init__(self):
+        super().__init__()
 
+        self.addRequirements(robot.drivetrain)
 
     def initialize(self):
         robot.drivetrain.stop()
         robot.drivetrain.setProfile(0)
-        try:
-            robot.drivetrain.setSpeedLimit(self.speedLimit)
-        except (ValueError, MissingConfigError):
-            print('Could not set speed to %s' % self.speedLimit)
-            driverhud.showAlert('Drive Train is not configured')
-            robot.drivetrain.enableSimpleDriving()
 
         self.lastY = None
         self.slowed = False
-
 
     def execute(self):
         # Avoid quick changes in direction
@@ -54,7 +46,5 @@ class DriveCommand(Command):
             correction = 0
 
         robot.drivetrain.move(
-            logicalaxes.driveX.get(),
-            y - correction,
-            logicalaxes.driveRotate.get()
+            logicalaxes.driveX.get(), y - correction, logicalaxes.driveRotate.get()
         )

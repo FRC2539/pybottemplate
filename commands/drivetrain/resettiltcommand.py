@@ -1,15 +1,13 @@
-from wpilib.command import InstantCommand
+from commands2 import InstantCommand
 
 import robot
 
+
 class ResetTiltCommand(InstantCommand):
-
     def __init__(self):
-        super().__init__('Set Tilt to 0')
+        super().__init__()
 
-        self.requires(robot.drivetrain)
-        self.setRunWhenDisabled(True)
-
+        self.addRequirements(robot.drivetrain)
 
     def initialize(self):
         robot.drivetrain.resetTilt()

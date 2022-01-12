@@ -8,7 +8,7 @@ from commands.resetcommand import ResetCommand
 
 
 def init():
-    '''
+    """
     Declare all controllers, assign axes to logical axes, and trigger
     commands on various button events. Available event types are:
         - whenPressed
@@ -16,7 +16,7 @@ def init():
         - whenReleased
         - toggleWhenPressed: start on first press, cancel on next
         - cancelWhenPressed: good for commands started with a different button
-    '''
+    """
 
     # The controller for driving the robot
     driveController = LogitechDualShock(0)
@@ -26,8 +26,7 @@ def init():
     logicalaxes.driveRotate = driveController.RightX
 
     driveController.Back.whenPressed(ResetCommand())
-    driveController.X.toggleWhenPressed(DriveCommand(Config('DriveTrain/preciseSpeed')))
-
+    driveController.X.toggleWhenPressed(DriveCommand())
 
     # The controller for non-driving subsystems of the robot
     componentController = LogitechDualShock(1)

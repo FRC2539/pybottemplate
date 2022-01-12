@@ -1,14 +1,13 @@
-from wpilib.command import InstantCommand
+from commands2 import InstantCommand
 
 import robot
 
+
 class ResetPIDCommand(InstantCommand):
-
     def __init__(self):
-        super().__init__('Reset PID values')
+        super().__init__()
 
-        self.requires(robot.drivetrain)
-
+        self.addRequirements(robot.drivetrain)
 
     def initialize(self):
         robot.drivetrain.resetPID()

@@ -1,89 +1,80 @@
-from wpilib.command import Command
+from commands2 import CommandBase
+from subsystems.swervedrive import SwerveDrive
 from custom import driverhud
 from custom.config import MissingConfigError
 import robot
 
-class MoveCommand(Command):
 
-    def __init__(self, distance, avoidCollisions=True, name=None):
-        '''
+class MoveCommand(CommandBase):
+    def __init__(self, distance, angle=0, tolerance=5, slow=False, name=None):
+        """
         Takes a distance in inches and stores it for later. We allow overriding
         name so that other autonomous driving commands can extend this class.
-        '''
+        """
 
         if name is None:
-            name = 'Move %f inches' % distance
+            name = "Move %f inches" % distance
 
-        super().__init__(name, 0.2)
+        super().__init__()
 
-        self.distance = distance
-        self.blocked = False
-        self.avoidCollisions = avoidCollisions
-        self.requires(robot.drivetrain)
+        if isinstance(robot.drivetain, SwerveDrive):
 
+            self.distance = -distance
+            self.angle = angle
+            self.tol = tolerance  # Angle tolerance in degrees.
+            self.isSlow = slow
 
-    def _initialize(self):
-        super()._initialize()
-        self.precision = robot.drivetrain.inchesToTicks(1)
+            self.moveSet = False
+            self.addRequirements(robot.drivetrain)
 
+    def swerveInitialize(self):
+        if self.isSlow:
+            robot.drivetrain.setCruiseVelocity(True)
 
-    def initialize(self):
-        self.obstacleCount = 0
-        self.blocked = False
-        self.onTarget = 0
-        self.targetPositions = []
-        offset = robot.drivetrain.inchesToTicks(self.distance)
-        sign = 1
-        for position in robot.drivetrain.getPositions():
-            self.targetPositions.append(position + offset * sign)
-            sign *= -1
+        robot.drivetrain.setModuleProfiles(1, turn=False)
 
-        robot.drivetrain.setPositions(self.targetPositions)
+        self.count = 0
+        self.startPos = robot.drivetrain.getPositions()
 
+        robot.drivetrain.setUniformModuleAngle(self.angle)
 
     def execute(self):
-        if self.avoidCollisions:
-            try:
-                if self.distance < 0:
-                    clearance = robot.drivetrain.getRearClearance()
+
+        self.count = 0
+        if self.count != 4 and not self.moveSet:
+            print(robot.drivetrain.getModuleAngles())
+            for currentAngle in robot.drivetrain.getModuleAngles():
+                if (
+                    abs(currentAngle - self.angle) < self.tol
+                    or abs(currentAngle - self.angle - 360) < self.tol
+                ):
+                    self.count += 1
                 else:
-                    clearance = robot.drivetrain.getFrontClearance()
+                    continue
 
-                if not self.blocked:
-                    if clearance < 10:
-                        if self.obstacleCount >= 10:
-                            self.blocked = True
-                            self.obstacleCount = 0
-                            robot.drivetrain.stop()
-                            robot.drivetrain.move(0, 0, 0)
-                            driverhud.showAlert('Obstacle Detected')
-                        else:
-                            self.obstacleCount += 1
-                    else:
-                        self.obstacleCount = 0
+        if self.count == 4:  # All angles aligned.
+            robot.drivetrain.setPositions(
+                [self.distance, self.distance, self.distance, self.distance]
+            )
 
-                else:
-                    if clearance >= 20:
-                        if self.obstacleCount >= 10:
-                            self.blocked = False
-                            self.obstacleCount = 0
-                            robot.drivetrain.setPositions(self.targetPositions)
-                        else:
-                            self.obstacleCount += 1
-                    else:
-                        self.obstacleCount = 0
+            self.moveSet = True
 
-            except NotImplementedError:
-                pass
-
+        robot.drivetrain.setUniformModuleAngle(self.angle)
 
     def isFinished(self):
-        if self.blocked:
-            return False
+        count = 0
+        for position, start in zip(robot.drivetrain.getPositions(), self.startPos):
+            if abs(position - (start + self.distance)) < 4:
+                count += 1
+            else:
+                return False
 
-        if self.isTimedOut() and robot.drivetrain.atPosition(self.precision):
-            self.onTarget += 1
-        else:
-            self.onTarget = 0
+        if count == 4:
+            return True
 
-        return self.onTarget > 5
+    def end(self, interrupted):
+        print("WHAT")
+        robot.drivetrain.stop()
+        robot.drivetrain.setCruiseVelocity()
+        robot.drivetrain.setModuleProfiles(0, turn=False)
+        self.moveSet = False

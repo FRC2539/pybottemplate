@@ -7,11 +7,11 @@ import math
 
 
 class PivotCommand(TurnCommand):
-    '''Allows autonomous turning using the drive base encoders.'''
+    """Allows autonomous turning using the drive base encoders."""
 
     def __init__(self, degrees, reverse=False, name=None):
         if name is None:
-            name = 'Pivot %f degrees' % degrees
+            name = "Pivot %f degrees" % degrees
 
         super().__init__(degrees, name)
 
@@ -23,9 +23,8 @@ class PivotCommand(TurnCommand):
         if reverse:
             self.pivotSide = abs(self.pivotSide - 1)
 
-
     def initialize(self):
-        '''Calculates new positions by offsetting the current ones.'''
+        """Calculates new positions by offsetting the current ones."""
 
         offset = self._calculateDisplacement() * 2
         targetPositions = []
