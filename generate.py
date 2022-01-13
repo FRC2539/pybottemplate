@@ -31,25 +31,16 @@ def generateSubsystem():
     with open("subsystems/%s.py" % module, "w") as f:
         f.write(
             """
-from .cougarsystem import CougarSystem
+from wpilib.command import Subsystem
 
 import ports
-import math
 
 
-class {subsystem}(CougarSystem):
+class {subsystem}(Subsystem):
     \'\'\'Describe what this subsystem does.\'\'\'
 
     def __init__(self):
         super().__init__('{subsystem}')
-        
-    def periodic(self):
-        \"\"\"
-        Loops when nothing else is running in
-        this subsystem. Do not call this!
-        \"\"\"
-        self.feed()
-        
 """.lstrip().format(
                 subsystem=subsystem
             )
@@ -86,11 +77,11 @@ class {subsystem}(CougarSystem):
     with open("commands/resetcommand.py") as f:
         resetcommand = f.read()
 
-    requires = re.compile("(self\.addRequirements\(robot.\w+\)\s*)+")
+    requires = re.compile("(self\.requires\(robot.\w+\)\s*)+")
     match = requires.search(resetcommand)
 
     old = match[0].strip()
-    new = "%s\n        self.addRequirements(robot.%s)"
+    new = "%s\n        self.requires(robot.%s)"
     resetcommand = resetcommand.replace(old, new % (old, module))
 
     with open("commands/resetcommand.py", "w") as f:
@@ -120,16 +111,17 @@ def generateCommand():
 
     inherits = None
     if command.endswith("CommandGroup"):
-        inherits = "CommandGroupBase"
+        inherits = "CommandGroup"
     elif not command.endswith("Command"):
         command += "Command"
 
     if command == "DefaultCommand":
-        inherits = "CommandBase"
+        inherits = "Command"
 
     if inherits is None:
         bases = [
             "InstantCommand",
+            "TimedCommand",
             "CommandGroup",
             "Command",
             "DefaultCommand",
@@ -145,16 +137,13 @@ def generateCommand():
         if not inherits in bases:
             error("Unknown base class %s" % inherits)
 
-        if inherits == "Command" or inherits == "CommandGroup":
-            inherits += "Base"
-
     if inherits == "CommandGroup":
         inherits = "fc.CommandFlow"
         if command.endswith("Command"):
-            command += "GroupBase"
+            command += "Group"
 
     if inherits == "DefaultCommand":
-        inherits = "CommandBase"
+        inherits = "Command"
         command = "DefaultCommand"
 
     # Put spaces before capital letters
@@ -217,7 +206,7 @@ def generateCommand():
     if inherits == "fc.CommandFlow":
         content = "import commandbased.flowcontrol as fc"
     else:
-        content = "from commands2 import %s" % inherits
+        content = "from wpilib.command import %s" % inherits
 
         if len(requirements) > 0:
             content += "\n\nimport robot"
@@ -231,12 +220,12 @@ def generateCommand():
 
     if inherits == "TimedCommand":
         if duration:
-            content += "        super().__init__()"
+            content += "        super().__init__('%s', %s)"
             content = content % (description, duration)
         else:
-            content += "        super().__init__()"
+            content += "        super().__init__('%s', timeout)" % description
     else:
-        content += "        super().__init__()"
+        content += "        super().__init__('%s')" % description
 
     content += "\n\n"
 
@@ -247,7 +236,7 @@ def generateCommand():
     else:
         if len(requirements) > 0:
             for subsystem in requirements:
-                content += "        self.addRequirements(robot.%s)\n" % subsystem
+                content += "        self.requires(robot.%s)\n" % subsystem
 
             content += "\n"
 
@@ -255,7 +244,7 @@ def generateCommand():
 
         if inherits != "InstantCommand":
             content += "    def execute(self):\n        pass\n\n\n"
-            content += "    def end(self, interrupted):\n        pass\n"
+            content += "    def end(self):\n        pass\n"
 
     with open("%s/%s.py" % (path, command.lower()), "w") as f:
         f.write(content)
